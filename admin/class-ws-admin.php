@@ -32,6 +32,13 @@ if (! class_exists ( 'WSkroutz_Admin' )) {
             add_action('admin_init', array ( $this, 'register_options_init' ));
             add_action( 'admin_init', array ( $this, 'save_registered_setting' ) );
             add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts'));
+            add_filter( 'plugin_action_links_' . WOO_SKROUTZ_BASE, array ($this,'add_settings_link'));
+        }
+        
+        public function add_settings_link($links) {
+            $page = '<a href="' . admin_url( 'options-general.php?page=' . $this->settings_page ) .'">' . __( 'Settings', $this->text ) . '</a>';
+            array_unshift( $links, $page );
+            return $links;            
         }
 
         public function add_textdomain()
