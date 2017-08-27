@@ -33,7 +33,19 @@ if (! class_exists ( 'WSkroutz_Admin' )) {
             add_action( 'admin_init', array ( $this, 'save_registered_setting' ) );
             add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts'));
             add_filter( 'plugin_action_links_' . WOO_SKROUTZ_BASE, array ($this,'add_settings_link'));
+            add_filter( 'plugin_row_meta', array ($this, 'add_plugin_row_meta'), 10, 2 );
         }
+        
+        function add_plugin_row_meta( $links, $file ) {
+            if ( strpos( $file, 'woo-skroutz' ) !== false ) {
+                $new_links = array(
+                           'donate' => '<a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=47RM5G4438SJJ&lc=GR&item_name=Woo%2dSkroutz&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted" target="_blank"><span class="dashicons dashicons-thumbs-up"></span> ' . __( 'Donate', $this->text ) . '</a>'
+                           );
+            $links = array_merge( $links, $new_links );
+        }
+
+    return $links;
+}        
         
         public function add_settings_link($links) {
             $page = '<a href="' . admin_url( 'options-general.php?page=' . $this->settings_page ) .'">' . __( 'Settings', $this->text ) . '</a>';

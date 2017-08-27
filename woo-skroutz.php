@@ -30,7 +30,7 @@ woo_skroutz_define_constants( 'SLUG', dirname( plugin_basename( __FILE__ ) ) );
 woo_skroutz_define_constants( 'NAME', $plugin_data['name'] );
 woo_skroutz_define_constants( 'VERSION', $plugin_data['version'] );
 woo_skroutz_define_constants( 'TEXT', $plugin_data['text'] );
-woo_skroutz_define_constants( 'PREFIX', 'woo_skroutz' );
+woo_skroutz_define_constants( 'PREFIX', 'woo-skroutz' );
 woo_skroutz_define_constants( 'SETTINGS_PAGE', 'wskroutz' );
 woo_skroutz_define_constants( 'SETTINGS_NAME', 'woo_skroutz_options_settings' );
 
