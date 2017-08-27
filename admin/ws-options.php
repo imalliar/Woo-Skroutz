@@ -103,7 +103,7 @@
                             <li class="list-group-item">Go to the "Settings" tab.</li>
                             <li class="list-group-item">Select the desired settings.</li>
                             <li class="list-group-item">Click the "Save changes" button.</li>
-                            <li class="list-group-item">You're done. The address of the XML feed that you should provide skroutz is:</li>
+                            <li class="list-group-item">You're done. The address of the XML feed that you should provide skroutz is: <a target="_blank" href="<?php echo $this->url ?>"><?php _e("XML Feed", $this->text) ?></a></li>
                         </ul>    
                         <p class="note"><b><?php _e('Note!', $this->text); ?></b> <?php _e('If you want more options then tell me and I will be happy to add it.', $this->text); ?></p>
                     </div>
@@ -155,7 +155,7 @@
                                 </div>
                                 <div id="collapseThree" class="panel-collapse collapse " role="tabpanel" aria-labelledby="headingThree">
                                     <div class="panel-body">
-                                        <?php _e('On the "Settings" tab, select the desired settings and click the "Save changes" button. Give this address to the skroutz for the XML feed. It\'s that simple.', $this->text); ?>
+                                        <?php _e('On the "Settings" tab, select the desired settings and click the "Save changes" button. Give <b>' . $this->url . '</b> address to the skroutz for the XML feed. It\'s that simple.', $this->text); ?>
                                     </div>
                                 </div>
                             </div>
