@@ -87,7 +87,7 @@ if (!class_exists('WSkroutz_Admin')) {
             $options = get_option ($this->settings_page);
             if (false === $options) {
                 //Get defaults
-                $defaults = $this->get_default_options_settings();
+                $defaults = get_default_options_settings();
                 update_option ( $this->settings_page, $defaults );
             }               
 
@@ -112,7 +112,7 @@ if (!class_exists('WSkroutz_Admin')) {
 
         public function in_stock_page_render($args) {
             $options = get_option($this->settings_page);
-            if($options===false || empty($options)) $options = $this->get_default_options_settings();
+            if($options===false || empty($options)) $options = get_default_options_settings();
             ?>
             <select  name="<?php echo "{$this->settings_page}[" . "{$this->fields['inStock']}]"; ?>" class="form-control">
                 <option <?php selected($options[$this->fields['inStock']], '1'); ?> value='1'><?php echo $this->delivery_messages[1]; ?></option>
@@ -126,7 +126,7 @@ if (!class_exists('WSkroutz_Admin')) {
 
         public function out_of_stock_page_render($args) {
             $options = get_option($this->settings_page);
-            if($options===false || empty($options)) $options = $this->get_default_options_settings();
+            if($options===false || empty($options)) $options = get_default_options_settings();
             ?>
             
             <select  name="<?php echo "{$this->settings_page}[" . "{$this->fields['outOfStock']}]"; ?>" class="form-control">
@@ -145,13 +145,7 @@ if (!class_exists('WSkroutz_Admin')) {
             <?php
         }
 
-        public function get_default_options_settings() {
-            $defaults = array(
-                'delivery_days_in_stock' => 1,
-                'delivery_days_out_of_stock' => 5
-            );
-            return $defaults;
-        }
+
 
     }
 
