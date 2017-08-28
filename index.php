@@ -6,6 +6,7 @@ header('Cache-control: private');
 //header("Content-Disposition: attachment; filename=skroutz.xml");
 header('Expires: -1');
 require_once("../../../wp-load.php");
+require_once './defs.php';
 
 $xml = new SimpleXMLElement('<?xml version="1.0" encoding="utf-8"?><webstore/>');
 $now = date('Y-n-j G:i');
