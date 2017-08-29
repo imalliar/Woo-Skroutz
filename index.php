@@ -11,6 +11,9 @@ require_once './woo-skroutz.php';
 $xml = new SimpleXMLElement('<?xml version="1.0" encoding="utf-8"?><webstore/>');
 $now = date('Y-n-j G:i');
 $xml->addChild('created_at', "$now");
+$products = $xml->addChild('products');
+
+
 global $wpdb;
 $options = get_option(WOO_SKROUTZ_SETTINGS_PAGE);
 if($options===false || empty($options)) $options = get_default_options_settings();
@@ -21,6 +24,7 @@ $query =$wpdb->prepare(  "SELECT * FROM " . $wpdb->prefix . "posts WHERE `post_t
 $result = $wpdb->get_results($query);
 
 foreach ($result as $index => $prod) {
+    
     $sql = $wpdb->prepare(  "SELECT * FROM " . $wpdb->prefix . "postmeta WHERE `post_id` = %d AND `meta_key` LIKE %s;", $prod->ID, '_stock_status');
     $stockstatus = $wpdb->get_results($sql);
     if ((strcmp($stockstatus[0]->meta_value, "outofstock") == 0)& ($outOfStock==5) ){
@@ -72,13 +76,41 @@ foreach ($result as $index => $prod) {
         }
     }
     
+    $man=null;
     
+    if (strcmp($attr[0]->meta_value, "a:0:{}")) {       
+
+        $sql = $wpdb->prepare(  "SELECT * FROM " . $wpdb->prefix . "term_relationships as tr, " . $wpdb->prefix . "term_taxonomy as tt , " . $wpdb->prefix . "terms as t WHERE tr.object_id = %d and tt.term_taxonomy_id= tr.term_taxonomy_id and tt.term_id=t.term_id and tt.taxonomy like %s;", $prod->ID, 'pa_manufacturer');
+        $man = $wpdb->get_results($sql);
+    }
     
+    if(count($man) == 0) {	
+        $sql = $wpdb->prepare(  "SELECT * FROM " . $wpdb->prefix . "term_relationships as tr, " . $wpdb->prefix . "term_taxonomy as tt , " . $wpdb->prefix . "terms as t WHERE tr.object_id = %d and tt.term_taxonomy_id= tr.term_taxonomy_id and tt.term_id=t.term_id and tt.taxonomy like %s;", $prod->ID, 'product_brand');
+        $man = $wpdb->get_results($sql);
+    }    
     
-}
+    $sql = $wpdb->prepare(  "SELECT * FROM " . $wpdb->prefix . "term_relationships as tr, " . $wpdb->prefix . "term_taxonomy as tt , " . $wpdb->prefix . "terms as t WHERE tr.object_id = %d and tt.term_taxonomy_id= tr.term_taxonomy_id and tt.term_id=t.term_id and tt.taxonomy like %s;", $prod->ID, 'pa_color');
+    $color = $wpdb->get_results($sql);
+
+    $last_key = end(array_keys($categories));
+    
+    foreach ($categories as $index2 => $cat) {
+        
+    }
+
+    
+    $product = $products->addChild('product');
+    $product->name = NULL;
+    //$product->name->addCData($title);
+    $product->addChild('uid', $prod->ID);
+}    
+    
 
 
-echo $xml->asXML();
+ob_clean();
+$dom = dom_import_simplexml($simpleXml)->ownerDocument;
+$dom->formatOutput = true;
+print($dom->asXML());
 
 
 
