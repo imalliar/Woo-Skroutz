@@ -103,7 +103,7 @@
                             <li class="list-group-item">Go to the "Settings" tab.</li>
                             <li class="list-group-item">Select the desired settings.</li>
                             <li class="list-group-item">Click the "Save changes" button.</li>
-                            <li class="list-group-item">You're done. The address of the XML feed that you should provide skroutz is: <a target="_blank" href="<?php echo $this->url ?>"><?php _e("XML Feed", $this->text) ?></a></li>
+                            <li class="list-group-item">You're done. The address of the XML feed that you should provide skroutz is: <a target="_blank" href="<?php echo $this->url ?>"><?php echo $this->url ?></a></li>
                         </ul>    
                         <p class="note"><b><?php _e('Note!', $this->text); ?></b> <?php _e('If you want more options then tell me and I will be happy to add it.', $this->text); ?></p>
                     </div>
@@ -173,7 +173,33 @@
                                         <?php printf(__('Please mail me at: %s', $this->text), '<a href="mailto:imalliar@gmail.com?subject=Bug Reporting about the ' . $this->name . ' plugin">imalliar@gmail.com</a>'); ?>
                                     </div>
                                 </div>
-                            </div>     
+                            </div>   
+                            
+                            <div class="panel panel-danger">
+                                <div class="panel-heading" role="tab" id="headingFourOne">
+                                    <h4 class="panel-title">
+                                        <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseFourOne" aria-expanded="true" aria-controls="collapseFourOne">
+                                            <?php _e('I get the message "XML declaration allowed only at the start of the document" when I retrieve the XML feed.', $this->text); ?>
+                                        </a>
+                                    </h4>
+                                </div>
+                                <div id="collapseFourOne" class="panel-collapse collapse " role="tabpanel" aria-labelledby="headingFourOne">
+                                    <div class="panel-body">
+                                        <?php _e("Your theme or one of your plugins adds an extra line at the beggining of document. Unfortunatelly, the web stantard dicates that xml decleration shoud be at the first line of the document. You can:", $this->text); ?>
+                                        <ul class="list-group">
+                                            <li class="list-group-item">
+                                                <?php _e("Disable all plugins and enable them one by one and see which creates the problem.", $this->text); ?>
+                                            </li>
+                                            <li class="list-group-item">
+                                                <?php _e("Select a different theme.", $this->text); ?>
+                                            </li>
+                                            <li class="list-group-item">
+                                                <?php _e("Download xml file and give it to skroutz manually.", $this->text); ?>
+                                            </li>                                            
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>                               
 
                             <div class="panel panel-primary">
                                 <div class="panel-heading" role="tab" id="headingFive">

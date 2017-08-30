@@ -19,6 +19,7 @@ if (!class_exists('WSkroutz_Admin')) {
         private $text = WOO_SKROUTZ_TEXT;
         private $settings_page = WOO_SKROUTZ_SETTINGS_PAGE;
         private $settings_name = WOO_SKROUTZ_SETTINGS_NAME;
+        private $name = WOO_SKROUTZ_NAME;
         private $fields = array('inStock' => 'delivery_days_in_stock', 'outOfStock' => 'delivery_days_out_of_stock');
         private $delivery_messages;
 
@@ -142,6 +143,7 @@ if (!class_exists('WSkroutz_Admin')) {
         public function delivery_settings_section_callback($args) {
             ?>
             <p class="description"><?php _e("Product's shipping availability as used throughout your shop. Skroutz uses a fixed set of availability descriptions that will be crosslinked to the ones provided in your feed.", $this->text); ?></p>
+            <a href="<?php echo $this->url."/"; ?>index.php?d=1" class="button button-primary" target="_blank"><?php _e("Download XML feed", $this->text) ?></a>
             <?php
         }
 

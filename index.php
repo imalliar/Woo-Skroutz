@@ -3,7 +3,11 @@
 header('Content-type: text/xml');
 header('Pragma: public');
 header('Cache-control: private');
-//header("Content-Disposition: attachment; filename=skroutz.xml");
+
+if(isset($_GET['d']) && $_GET['d']==1)  {
+    header("Content-Disposition: attachment; filename=skroutz.xml");
+}
+
 header('Expires: -1');
 require_once("../../../wp-load.php");
 require_once './woo-skroutz.php';
@@ -13,15 +17,16 @@ $now = date('Y-n-j G:i');
 $xml->addChild('created_at', "$now");
 $products = $xml->addChild('products');
 
-
 global $wpdb;
 $options = get_option(WOO_SKROUTZ_SETTINGS_PAGE);
 if($options===false || empty($options)) $options = get_default_options_settings();
 $inStock = $options['delivery_days_in_stock'];
 $outOfStock = $options['delivery_days_out_of_stock'];
 
+/*
 $query =$wpdb->prepare(  "SELECT * FROM " . $wpdb->prefix . "posts WHERE `post_type` LIKE %s AND `post_status` LIKE %s", 'product', 'publish');
 $result = $wpdb->get_results($query);
+
 
 foreach ($result as $index => $prod) {
     
@@ -97,21 +102,35 @@ foreach ($result as $index => $prod) {
     foreach ($categories as $index2 => $cat) {
         
     }
-
-    
+        
     $product = $products->addChild('product');
     $product->name = NULL;
     //$product->name->addCData($title);
     $product->addChild('uid', $prod->ID);
 }    
+*/
+
+$full_product_list = array();
+$loop = new WP_Query(array('post_type' => array('product', 'product_variation'), 'post_status'=>'publish', 'posts_per_page' => -1));
+
+while ( $loop->have_posts() ) : 
+    $loop->the_post();
+    $theid = get_the_ID();
+    if( get_post_type() == 'product_variation' ){
     
+    }
+    $product = $products->addChild('product');
+    $product->name = NULL;
+    //$product->name->addCData($title);
+    $product->addChild('uid', $theid);
+    
+endwhile;
+
 
 
 ob_clean();
-$dom = dom_import_simplexml($simpleXml)->ownerDocument;
+$dom = dom_import_simplexml($xml)->ownerDocument;
 $dom->formatOutput = true;
-print($dom->asXML());
 
-
-
-
+print(trim($dom->saveXML()));
+?>
