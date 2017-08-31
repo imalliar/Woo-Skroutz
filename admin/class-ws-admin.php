@@ -57,7 +57,10 @@ if (!class_exists('WSkroutz_Admin')) {
             load_plugin_textdomain(WOO_SKROUTZ_TEXT, false, $this->dir . '/languages/');
         }
 
-        public function admin_enqueue_scripts($hook) {
+        public function admin_enqueue_scripts($hook) {            
+            $admin_settings_page = 'settings_page_' . $this->settings_page;
+            if($hook!=$admin_settings_page) return;
+            
             // Load jQuery library
             wp_enqueue_script('jquery');
 
