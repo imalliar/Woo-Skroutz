@@ -61,6 +61,7 @@ if (!class_exists('WSkroutz_Admin')) {
             $admin_settings_page = 'settings_page_' . $this->settings_page;
             if($hook!=$admin_settings_page) return;
             
+            
             // Load jQuery library
             wp_enqueue_script('jquery');
 
@@ -147,6 +148,7 @@ if (!class_exists('WSkroutz_Admin')) {
             ?>
             <p class="description"><?php _e("Product's shipping availability as used throughout your shop. Skroutz uses a fixed set of availability descriptions that will be crosslinked to the ones provided in your feed.", $this->text); ?></p>
             <a href="<?php echo $this->url."/"; ?>index.php?d=1" class="button button-primary" target="_blank"><?php _e("Download XML feed", $this->text) ?></a>
+            <a href="<?php echo $this->url."/"; ?>index.php" class="button button-primary" target="_blank"><?php _e("View XML feed", $this->text) ?></a>
             <?php
         }
 
