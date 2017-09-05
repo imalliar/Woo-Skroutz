@@ -34,6 +34,7 @@ woo_skroutz_define_constants('PREFIX', 'woo-skroutz');
 woo_skroutz_define_constants('SETTINGS_PAGE', 'wskroutz');
 woo_skroutz_define_constants('SETTINGS_NAME', 'woo_skroutz_options_settings');
 
+
 $delivery_messages = array(
     1 => __('Available in store / Delivery 1 to 3 days', WOO_SKROUTZ_TEXT),
     2 => __('Delivery 1 to 3 days', WOO_SKROUTZ_TEXT),
