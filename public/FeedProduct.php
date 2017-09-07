@@ -17,7 +17,6 @@ class FeedProduct {
     public $inStock;
     public $shippingCost;
     public $color;
-    public $isParent;
     
     public function __construct($id) {
         $this->uniqueId=$id;

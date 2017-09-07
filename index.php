@@ -29,51 +29,37 @@ function createXML($feed_products) {
 
 function get_woocommerce_product_list() {
     $full_product_list = array();
-    $loop = new WP_Query(array('post_type' => array('product', 'product_variation'), 'posts_per_page' => -1));
+     //xdebug_break();
+    $loop = new WP_Query(array('post_type' => array('product'), 'posts_per_page' => -1));
 
     while ($loop->have_posts()) :
         $loop->the_post();
         $theid = get_the_ID();
-        $product = new FeedProduct($theid);
+        $thetitle = get_the_title();
+        $product = wc_get_product($theid);    
         
-        // its a variable product
-        if (get_post_type() == 'product_variation') {
-            $parent_id = wp_get_post_parent_id($theid);
-            $sku = get_post_meta($theid, '_sku', true);
-            $thetitle = get_the_title($parent_id);
-
-            // ****** Some error checking for product database *******
-            // check if variation sku is set
-            if ($sku == '') {
-                if ($parent_id == 0) {
-                    // Remove unexpected orphaned variations.. set to auto-draft
-                    $false_post = array();
-                    $false_post['ID'] = $theid;
-                    $false_post['post_status'] = 'auto-draft';
-                    wp_update_post($false_post);
-                    if (function_exists(add_to_debug))
-                        add_to_debug('false post_type set to auto-draft. id=' . $theid);
-                } else {
-                    // there's no sku for this variation > copy parent sku to variation sku
-                    // & remove the parent sku so the parent check below triggers
-                    $sku = get_post_meta($parent_id, '_sku', true);
-                    if (function_exists(add_to_debug))
-                        add_to_debug('empty sku id=' . $theid . 'parent=' . $parent_id . 'setting sku to ' . $sku);
-                    update_post_meta($theid, '_sku', $sku);
-                    update_post_meta($parent_id, '_sku', '');
-                }
+        print_r($product);
+        if($product instanceof WC_Product_Variable) {
+            $variations = $product->get_available_variations();
+            print_r($variations);
+            foreach ($variations as $variation) {
+                if(!$variation['variation_is_active'] || !$variation['variation_is_visible']) continue;
+                
+                $var_product = new FeedProduct($variation['variation_id']);
+                $var_product->title=$thetitle;
+                $var_product->mpn=$variation['sku'];
+                $full_product_list[]=$var_product;
             }
-            // ****************** end error checking *****************
-            // its a simple product
         } else {
-            $sku = get_post_meta($theid, '_sku', true);
-            $thetitle = get_the_title();
+            $feed_product = new FeedProduct($theid);
+            $sku = $product->get_sku();
+            // add product to array but don't add the parent of product variations
+            $feed_product->uniqueId = $theid;
+            $feed_product->title = $thetitle;
+            $feed_product->mpn = $sku;
+            
+            $full_product_list[] = $feed_product;
         }
-        // add product to array but don't add the parent of product variations
-        
-        $product->uniqueId = $sku;
-        $product->title = $thetitle;
-        $full_product_list[] = $product;
         
     endwhile;
     wp_reset_query();
