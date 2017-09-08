@@ -27,6 +27,7 @@ function createXML($feed_products) {
     }
 }
 
+
 function get_woocommerce_product_list() {
     $full_product_list = array();
      //xdebug_break();
@@ -40,6 +41,14 @@ function get_woocommerce_product_list() {
         
         print_r($product);
         if($product instanceof WC_Product_Variable) {
+            $children = $product->get_children();
+            foreach ($children as $child) {
+                $variation = wc_get_product($child);
+                $var_product = new FeedProduct($child);
+                $var_product->title = $variation->get_title();
+                $full_product_list[]=$var_product;
+            }
+            
             $variations = $product->get_available_variations();
             print_r($variations);
             foreach ($variations as $variation) {
@@ -48,15 +57,28 @@ function get_woocommerce_product_list() {
                 $var_product = new FeedProduct($variation['variation_id']);
                 $var_product->title=$thetitle;
                 $var_product->mpn=$variation['sku'];
+                
                 $full_product_list[]=$var_product;
             }
         } else {
             $feed_product = new FeedProduct($theid);
-            $sku = $product->get_sku();
             // add product to array but don't add the parent of product variations
             $feed_product->uniqueId = $theid;
             $feed_product->title = $thetitle;
-            $feed_product->mpn = $sku;
+            $feed_product->mpn = $product->get_sku();
+            $feed_product->price = $product->get_sale_price();
+            $imageId = $product->get_image_id();
+            if($imageId) $imagearray = wp_get_attachment_image_src($imageId, 'full');
+            if(!empty($imagearray)) $feed_product->imageLink = $imagearray[0];
+            $additionalImages = $product->get_gallery_image_ids();
+            $feed_product->additionalImageLink=[];
+            foreach ($additionalImages as $aimgid) {
+                $aimg = wp_get_attachment_image_src($aimgid, 'full');
+                if(!empty($aimg)) $feed_product->additionalImageLink[]=$aimg[0];
+            }
+            $feed_product->productLink = $product->get_permalink();
+            $feed_product->inStock = $product->is_in_stock();
+            
             
             $full_product_list[] = $feed_product;
         }
