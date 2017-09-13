@@ -20,7 +20,7 @@ if (!class_exists('WSkroutz_Admin')) {
         private $settings_page = WOO_SKROUTZ_SETTINGS_PAGE;
         private $settings_name = WOO_SKROUTZ_SETTINGS_NAME;
         private $name = WOO_SKROUTZ_NAME;
-        private $fields = array('inStock' => 'delivery_days_in_stock', 'outOfStock' => 'delivery_days_out_of_stock');
+        private $fields = array('inStock' => 'delivery_days_in_stock', 'outOfStock' => 'delivery_days_out_of_stock', 'manufacturer' => 'manufacturer_slag');
         private $delivery_messages;
 
         public function __construct($dm) {
@@ -31,7 +31,6 @@ if (!class_exists('WSkroutz_Admin')) {
             add_action('init', array($this, 'add_textdomain'));
             add_action('admin_menu', array($this, 'add_admin_menu'));
             add_action('admin_init', array($this, 'register_options_init'));
-            add_action('admin_init', array($this, 'save_registered_setting'));
             add_action('admin_enqueue_scripts', array($this, 'admin_enqueue_scripts'));
             add_filter('plugin_action_links_' . WOO_SKROUTZ_BASE, array($this, 'add_settings_link'));
             add_filter('plugin_row_meta', array($this, 'add_plugin_row_meta'), 10, 2);
@@ -77,17 +76,25 @@ if (!class_exists('WSkroutz_Admin')) {
 
         public function register_options_init() {
             $section = 'wskroutz_delivery_options_section';
+            $taxonomy_section = 'wskroutz_taxonomy_options_section';
             register_setting($this->settings_page, $this->settings_page);         
             
             add_settings_section(
                     $section, __('Delivery settings', $this->text), array($this, 'delivery_settings_section_callback'), $this->settings_page);
+            
             add_settings_field(
                     $this->fields['inStock'], __('In Stock Products', $this->text), array($this, 'in_stock_page_render'), $this->settings_page, $section
             );
-
             add_settings_field(
                     $this->fields['outOfStock'], __('Out Of Stock Products', $this->text), array($this, 'out_of_stock_page_render'), $this->settings_page, $section
             );
+
+            add_settings_section(
+                    $taxonomy_section, __('Taxonomy settings', $this->text), array($this, 'taxonomy_settings_section_callback'), $this->settings_page);
+            
+            add_settings_field(
+                    $this->fields['manufacturer'], __('Manufacturer Slug', $this->text), array($this, 'manufacturer_page_render'), $this->settings_page, $taxonomy_section
+            );            
             
             $options = get_option ($this->settings_page);
             if (false === $options) {
@@ -96,11 +103,6 @@ if (!class_exists('WSkroutz_Admin')) {
                 update_option ( $this->settings_page, $defaults );
             }               
 
-        }
-
-        public function save_registered_setting() {
-            //$options = get_option($this->settings_page);
-            //update_option( $this->settings_page, $options );
         }
 
         public function add_admin_menu() {
@@ -143,6 +145,15 @@ if (!class_exists('WSkroutz_Admin')) {
             <p class="description"><?php _e("This product's shipping availability as used throughout your shop. 'Upon order' refers to products that are ordered upon customer request up to 30 days.", $this->text); ?></p>
             <?php
         }
+        
+        public function manufacturer_page_render($args) {
+            $options = get_option($this->settings_page);
+            if($options===false || empty($options)) $options = get_default_options_settings();
+            ?>
+            <input value="<?php echo $options[$this->fields['manufacturer']]; ?>" name="<?php echo "{$this->settings_page}[" . "{$this->fields['manufacturer']}]"; ?>" class="form-control" placeholder="<?php _e("Manufacturer Slug", $this->text); ?>"/>
+            <p class="description"><?php _e("The manufacturer slug. That is the name of either the taxonomy name or the arbute of the manufacturer.", $this->text); ?></p>
+            <?php
+        }
 
         public function delivery_settings_section_callback($args) {
             ?>
@@ -152,7 +163,11 @@ if (!class_exists('WSkroutz_Admin')) {
             <?php
         }
 
-
+        public function taxonomy_settings_section_callback($args) {
+            ?>
+            <p class="description"><?php _e("Taxonomy settings for additional information about the shop. For instance Manufacturer.", $this->text); ?></p>
+            <?php
+        }
 
     }
 

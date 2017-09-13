@@ -30,7 +30,11 @@ function createXML($feed_products) {
 
 function get_woocommerce_product_list() {
     $full_product_list = array();
-     //xdebug_break();
+    $options = get_option(WOO_SKROUTZ_SETTINGS_PAGE);
+    if ($options === false || empty($options))
+        $options = get_default_options_settings();
+    $manufacturer = $options['manufacturer_slag'];
+
     $loop = new WP_Query(array('post_type' => array('product'), 'posts_per_page' => -1));
 
     while ($loop->have_posts()) :
@@ -78,6 +82,14 @@ function get_woocommerce_product_list() {
             }
             $feed_product->productLink = $product->get_permalink();
             $feed_product->inStock = $product->is_in_stock();
+            if($manufacturer) {
+                $terms =  wp_get_post_terms($product->get_id(), $manufacturer);
+                
+            }
+            print_r(wc_get_product_term_ids($product->get_id(), 'pwb-brand'));
+            if(!empty($terms)) {
+                
+            }
             
             
             $full_product_list[] = $feed_product;
