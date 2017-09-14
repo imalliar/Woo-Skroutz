@@ -31,8 +31,7 @@ function createXML($feed_products) {
 function get_woocommerce_product_list() {
     $full_product_list = array();
     $options = get_option(WOO_SKROUTZ_SETTINGS_PAGE);
-    if ($options === false || empty($options))
-        $options = get_default_options_settings();
+    if ($options === false || empty($options)) $options = get_default_options_settings();
     $manufacturer = $options['manufacturer_slag'];
 
     $loop = new WP_Query(array('post_type' => array('product'), 'posts_per_page' => -1));
@@ -43,7 +42,6 @@ function get_woocommerce_product_list() {
         $thetitle = get_the_title();
         $product = wc_get_product($theid);    
         
-        print_r($product);
         if($product instanceof WC_Product_Variable) {
             $children = $product->get_children();
             foreach ($children as $child) {
@@ -54,7 +52,6 @@ function get_woocommerce_product_list() {
             }
             
             $variations = $product->get_available_variations();
-            print_r($variations);
             foreach ($variations as $variation) {
                 if(!$variation['variation_is_active'] || !$variation['variation_is_visible']) continue;
                 
@@ -71,7 +68,8 @@ function get_woocommerce_product_list() {
             $feed_product->title = $thetitle;
             $feed_product->mpn = $product->get_sku();
             $feed_product->price = $product->get_sale_price();
-            $imageId = $product->get_image_id();
+            $feed_product->weight=$product->get_weight();
+            $imageId = $product->get_image_id();            
             if($imageId) $imagearray = wp_get_attachment_image_src($imageId, 'full');
             if(!empty($imagearray)) $feed_product->imageLink = $imagearray[0];
             $additionalImages = $product->get_gallery_image_ids();
@@ -81,16 +79,31 @@ function get_woocommerce_product_list() {
                 if(!empty($aimg)) $feed_product->additionalImageLink[]=$aimg[0];
             }
             $feed_product->productLink = $product->get_permalink();
-            $feed_product->inStock = $product->is_in_stock();
+            $feed_product->inStock = $product->is_in_stock()?"Y":"N";
             if($manufacturer) {
                 $terms =  wp_get_post_terms($product->get_id(), $manufacturer);
                 
             }
-            print_r(wc_get_product_term_ids($product->get_id(), 'pwb-brand'));
-            if(!empty($terms)) {
-                
-            }
             
+            $terms = wc_get_product_term_ids($product->get_id(), $options['manufacturer_slag']);               
+            if(!empty($terms)) {
+                $term_names=array();
+                foreach ($terms as $term) {
+                    $man = get_term($term);
+                    $term_names[]=$man->name;
+                }
+                $feed_product->manufacturer = implode(",", $term_names);
+            }
+            if(!$feed_product->manufacturer) {
+                $attrs = $product->get_attributes();
+                if(!empty($attrs)) {
+                    $attr_names=array();
+                    foreach ($attrs as $attr) {
+                        $attr_names[]=implode("-", $attr->get_options());
+                    }
+                    $feed_product->manufacturer = implode(",", $attr_names);                    
+                }                
+            }
             
             $full_product_list[] = $feed_product;
         }
@@ -100,7 +113,6 @@ function get_woocommerce_product_list() {
     // sort into alphabetical order, by title
     sort($full_product_list);
     print_r($full_product_list);
-    die;
     return $full_product_list;
 }
 
