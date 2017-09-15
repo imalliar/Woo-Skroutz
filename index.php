@@ -80,11 +80,7 @@ function get_woocommerce_product_list() {
             }
             $feed_product->productLink = $product->get_permalink();
             $feed_product->inStock = $product->is_in_stock()?"Y":"N";
-            if($manufacturer) {
-                $terms =  wp_get_post_terms($product->get_id(), $manufacturer);
-                
-            }
-            
+                        
             $terms = wc_get_product_term_ids($product->get_id(), $options['manufacturer_slag']);               
             if(!empty($terms)) {
                 $term_names=array();
@@ -104,6 +100,32 @@ function get_woocommerce_product_list() {
                     $feed_product->manufacturer = implode(",", $attr_names);                    
                 }                
             }
+
+            $categories_id = $product->get_category_ids();
+            if(!empty($categories_id)) {
+                $categories = array();
+                foreach ($categories_id as $cid) {
+                    //$categories[] = get_category_parents($cid, true);
+                    //get_category_parents($cid);
+                    //print_r(get_category(22));
+                    //print_r(get_category(15));
+                    $catt = get_category(22); 
+                    echo $catt . "   8888";
+                    do {
+                        break;
+                        $cat = get_category($cid);
+                        if($cat) {
+                            
+                        }
+                    } while($cat && $cat->parent>0);
+                    
+                    
+                    //if($cat) {
+                    //    $categories[] = get_category_parents($cid, true);
+                    //}                    
+                }
+                $feed_product->category = implode(",", $categories);
+            }
             
             $full_product_list[] = $feed_product;
         }
@@ -113,6 +135,7 @@ function get_woocommerce_product_list() {
     // sort into alphabetical order, by title
     sort($full_product_list);
     print_r($full_product_list);
+    die;
     return $full_product_list;
 }
 

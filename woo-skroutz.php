@@ -50,6 +50,13 @@ function get_default_options_settings() {
     return $defaults;
 }
 
+add_filter( 'woocommerce_product_subcategories_hide_empty', 'hide_empty_categories', 10, 1 );
+function hide_empty_categories ( $hide_empty ) {
+    $hide_empty  =  FALSE;
+    // You can add other logic here too
+    return $hide_empty;
+}
+
 if (is_admin()) {
     require_once WOO_SKROUTZ_PATH . '/admin/class-ws-admin.php';
     if (!defined('WSkroutz_Admin')) {
