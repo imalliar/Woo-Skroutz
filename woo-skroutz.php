@@ -14,13 +14,14 @@
 // Exit if accessed directly
 defined('ABSPATH') or die("Restricted access!");
 
-function woo_skroutz_define_constants($constant_name, $value) {
-    $constant_name = 'WOO_SKROUTZ_' . $constant_name;
-    if (!defined($constant_name))
-        define($constant_name, $value);
-}
+define('__ROOT__', dirname(__FILE__)); 
 
-$plugin_data = get_file_data(__FILE__, array('name' => 'Plugin Name', 'version' => 'Version', 'text' => 'Text Domain'));
+$plugin_data = get_file_data(__FILE__, 
+    array('name' => 'Plugin Name', 
+    'version' => 'Version', 'text' => 'Text Domain'));
+
+require_once plugin_dir_path(__FILE__) . '/public/common.php';
+
 
 woo_skroutz_define_constants('DIR', dirname(plugin_basename(__FILE__)));
 woo_skroutz_define_constants('BASE', plugin_basename(__FILE__));
@@ -42,13 +43,6 @@ $delivery_messages = array(
     4 => __('Upon order', WOO_SKROUTZ_TEXT),
     5 => __('Do not show', WOO_SKROUTZ_TEXT));
 
-function get_default_options_settings() {
-    $defaults = array(
-        'delivery_days_in_stock' => 1,
-        'delivery_days_out_of_stock' => 5
-    );
-    return $defaults;
-}
 
 add_filter( 'woocommerce_product_subcategories_hide_empty', 'hide_empty_categories', 10, 1 );
 function hide_empty_categories ( $hide_empty ) {

@@ -11,7 +11,7 @@ if (isset($_GET['d']) && $_GET['d'] == 1) {
 
 header('Expires: -1');
 require_once("../../../wp-load.php");
-require_once './woo-skroutz.php';
+require_once './public/common.php';
 require_once './public/SimpleXMLElementExtended.php';
 require_once './public/FeedProduct.php';
 
@@ -105,12 +105,9 @@ function get_woocommerce_product_list() {
             if(!empty($categories_id)) {
                 $categories = array();
                 foreach ($categories_id as $cid) {
-                    //$categories[] = get_category_parents($cid, true);
-                    //get_category_parents($cid);
-                    //print_r(get_category(22));
-                    //print_r(get_category(15));
-                    $catt = get_category(22); 
-                    echo $catt . "   8888";
+
+                    $categories[] = get_category_parents($cid);
+                                           /*                 
                     do {
                         break;
                         $cat = get_category($cid);
@@ -118,7 +115,7 @@ function get_woocommerce_product_list() {
                             
                         }
                     } while($cat && $cat->parent>0);
-                    
+                    */
                     
                     //if($cat) {
                     //    $categories[] = get_category_parents($cid, true);
