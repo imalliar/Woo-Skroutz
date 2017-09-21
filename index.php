@@ -79,7 +79,12 @@ function get_woocommerce_product_list() {
                 if(!empty($aimg)) $feed_product->additionalImageLink[]=$aimg[0];
             }
             $feed_product->productLink = $product->get_permalink();
-            $feed_product->inStock = $product->is_in_stock()?"Y":"N";
+            if($product->is_in_stock()) {
+                $feed_product->inStock = "Y";
+                $feed_product->availability = 
+            } else {
+                $feed_product->inStock = "N";
+            }
                         
             $terms = wc_get_product_term_ids($product->get_id(), $options['manufacturer_slag']);        
             if(!empty($terms)) {
@@ -110,7 +115,7 @@ function get_woocommerce_product_list() {
                 }
                 $feed_product->category = implode(",", $categories);
             }
-            
+                        
             $full_product_list[] = $feed_product;
         }
         
