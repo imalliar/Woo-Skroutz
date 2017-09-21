@@ -15,3 +15,21 @@ function woo_skroutz_define_constants($constant_name, $value) {
         define($constant_name, $value);
 }
 
+function get_product_category_by_id($cat_id) 
+{
+    $category = get_term_by('id', $cat_id, 'product_cat');
+    return $category; 
+}
+
+function get_category_ancestors($cid, $seperator=' > '){
+    $result = array();    
+    while ($cid>0) {
+        $category = get_product_category_by_id($cid);
+        if($category && !empty($category->name)) {
+            $result[] = $category->name;
+        }
+        $cid = $category->parent;
+    } 
+    
+    return implode($seperator, array_reverse($result));
+}

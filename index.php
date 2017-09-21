@@ -81,7 +81,7 @@ function get_woocommerce_product_list() {
             $feed_product->productLink = $product->get_permalink();
             $feed_product->inStock = $product->is_in_stock()?"Y":"N";
                         
-            $terms = wc_get_product_term_ids($product->get_id(), $options['manufacturer_slag']);               
+            $terms = wc_get_product_term_ids($product->get_id(), $options['manufacturer_slag']);        
             if(!empty($terms)) {
                 $term_names=array();
                 foreach ($terms as $term) {
@@ -92,6 +92,7 @@ function get_woocommerce_product_list() {
             }
             if(!$feed_product->manufacturer) {
                 $attrs = $product->get_attributes();
+
                 if(!empty($attrs)) {
                     $attr_names=array();
                     foreach ($attrs as $attr) {
@@ -105,21 +106,7 @@ function get_woocommerce_product_list() {
             if(!empty($categories_id)) {
                 $categories = array();
                 foreach ($categories_id as $cid) {
-
-                    $categories[] = get_category_parents($cid);
-                                           /*                 
-                    do {
-                        break;
-                        $cat = get_category($cid);
-                        if($cat) {
-                            
-                        }
-                    } while($cat && $cat->parent>0);
-                    */
-                    
-                    //if($cat) {
-                    //    $categories[] = get_category_parents($cid, true);
-                    //}                    
+                    $categories[] = get_category_ancestors($cid);
                 }
                 $feed_product->category = implode(",", $categories);
             }
