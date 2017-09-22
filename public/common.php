@@ -1,6 +1,6 @@
 <?php
 
-function get_delivery_messages() {
+function get_delivery_messages($msg='') {
     $delivery_messages = array(
         1 => __('Available in store / Delivery 1 to 3 days', WOO_SKROUTZ_TEXT),
         2 => __('Delivery 1 to 3 days', WOO_SKROUTZ_TEXT),
@@ -8,7 +8,16 @@ function get_delivery_messages() {
         4 => __('Upon order', WOO_SKROUTZ_TEXT),
         5 => __('Do not show', WOO_SKROUTZ_TEXT));
     
-    return $delivery_messages;
+    return empty($msg) ? $delivery_messages : $delivery_messages[$msg];
+}
+
+function get_options_fields($field='') {
+    $fields = array(
+        'inStock' => 'delivery_days_in_stock', 
+        'outOfStock' => 'delivery_days_out_of_stock', 
+        'manufacturer' => 'manufacturer_slag');    
+    
+    return empty($field) ? $fields : $fields[$field];
 }
 
 function get_default_options_settings() {

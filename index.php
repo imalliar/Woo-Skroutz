@@ -81,9 +81,10 @@ function get_woocommerce_product_list() {
             $feed_product->productLink = $product->get_permalink();
             if($product->is_in_stock()) {
                 $feed_product->inStock = "Y";
-                $feed_product->availability = 
+                $feed_product->availability = get_delivery_messages($options[get_options_fields('inStock')]);
             } else {
                 $feed_product->inStock = "N";
+                $feed_product->availability = get_delivery_messages($options[get_options_fields('outOfStock')]);
             }
                         
             $terms = wc_get_product_term_ids($product->get_id(), $options['manufacturer_slag']);        

@@ -20,11 +20,12 @@ if (!class_exists('WSkroutz_Admin')) {
         private $settings_page = WOO_SKROUTZ_SETTINGS_PAGE;
         private $settings_name = WOO_SKROUTZ_SETTINGS_NAME;
         private $name = WOO_SKROUTZ_NAME;
-        private $fields = array('inStock' => 'delivery_days_in_stock', 'outOfStock' => 'delivery_days_out_of_stock', 'manufacturer' => 'manufacturer_slag');
+        private $fields;
         private $delivery_messages;
 
         public function __construct($dm) {
             $this->delivery_messages = $dm;
+            $this->fields = get_options_fields();
         }
 
         public function init() {
