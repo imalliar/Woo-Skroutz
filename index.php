@@ -102,7 +102,13 @@ function get_woocommerce_product_list() {
                 if(!empty($attrs)) {
                     $attr_names=array();
                     foreach ($attrs as $attr) {
-                        $attr_names[]=implode("-", $attr->get_options());
+                        $attr_options = $attr->get_options();
+                        foreach ($attr_options as $attr_option) {
+                            $attr_name = get_term($attr_option);
+                            if($attr_name) $attr_names[] = $attr_name->name;
+                        }
+                        //$attr_names[]=implode("-", $attr->get_options());
+                        
                     }
                     $feed_product->manufacturer = implode(",", $attr_names);                    
                 }                

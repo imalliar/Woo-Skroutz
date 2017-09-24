@@ -23,8 +23,8 @@ if (!class_exists('WSkroutz_Admin')) {
         private $fields;
         private $delivery_messages;
 
-        public function __construct($dm) {
-            $this->delivery_messages = $dm;
+        public function __construct() {
+            $this->delivery_messages = get_delivery_messages();
             $this->fields = get_options_fields();
         }
 

@@ -54,14 +54,4 @@ function get_category_ancestors($cid, $seperator=' > '){
     return implode($seperator, array_reverse($result));
 }
 
-woo_skroutz_define_constants('DIR', dirname(plugin_basename(__FILE__)));
-woo_skroutz_define_constants('BASE', plugin_basename(__FILE__));
-woo_skroutz_define_constants('URL', plugin_dir_url(__FILE__));
-woo_skroutz_define_constants('PATH', plugin_dir_path(__FILE__));
-woo_skroutz_define_constants('SLUG', dirname(plugin_basename(__FILE__)));
-woo_skroutz_define_constants('NAME', $plugin_data['name']);
-woo_skroutz_define_constants('VERSION', $plugin_data['version']);
-woo_skroutz_define_constants('TEXT', $plugin_data['text']);
-woo_skroutz_define_constants('PREFIX', 'woo-skroutz');
-woo_skroutz_define_constants('SETTINGS_PAGE', 'wskroutz');
-woo_skroutz_define_constants('SETTINGS_NAME', 'woo_skroutz_options_settings');
+
