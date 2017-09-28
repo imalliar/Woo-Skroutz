@@ -103,9 +103,13 @@ function get_woocommerce_product_list() {
                     $attr_names=array();
                     foreach ($attrs as $attr) {
                         $attr_options = $attr->get_options();
-                        foreach ($attr_options as $attr_option) {
+                        foreach ($attr_options as $attr_option) {                            
                             $attr_name = get_term($attr_option);
-                            if($attr_name) $attr_names[] = $attr_name->name;
+                            if($attr_name) {
+                                $taxonomy = $attr_name->taxonomy;
+                                if($attr_name->taxonomy=='pa_' . $options['manufacturer_slag'] || $attr_name->taxonomy==$options['manufacturer_slag'])
+                                    $attr_names[] = $attr_name->name;
+                            }
                         }
                         //$attr_names[]=implode("-", $attr->get_options());
                         
