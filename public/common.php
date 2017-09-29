@@ -15,7 +15,9 @@ function get_options_fields($field='') {
     $fields = array(
         'inStock' => 'delivery_days_in_stock', 
         'outOfStock' => 'delivery_days_out_of_stock', 
-        'manufacturer' => 'manufacturer_slag');    
+        'manufacturer' => 'manufacturer_slag',
+        'iban' => 'iban_slag'
+    );    
     
     return empty($field) ? $fields : $fields[$field];
 }
@@ -24,7 +26,8 @@ function get_default_options_settings() {
     $defaults = array(
         'delivery_days_in_stock' => 1,
         'delivery_days_out_of_stock' => 5,
-        'manufacturer_slag' => ''
+        'manufacturer_slag' => '',
+        'iban_slag' => ''
     );
     return $defaults;
 }

@@ -11,12 +11,12 @@ class FeedProduct {
     public $availability;
     public $manufacturer;
     public $mpn;
-    public $barcode;
     public $size;
     public $weight;
     public $inStock;
     public $shippingCost;
     public $color;
+    public $iban;
     
     public function __construct($id) {
         $this->uniqueId=$id;

@@ -117,6 +117,37 @@ function get_woocommerce_product_list() {
                     $feed_product->manufacturer = implode(",", $attr_names);                    
                 }                
             }
+            
+            $terms = wc_get_product_term_ids($product->get_id(), $options['iban_slag']);
+            if(!empty($terms)) {
+                $term_names=array();
+                foreach ($terms as $term) {
+                    $man = get_term($term);
+                    $term_names[]=$man->name;
+                }
+                $feed_product->iban = implode(",", $term_names);
+            }
+            if(!$feed_product->iban) {
+                $attrs = $product->get_attributes();
+                
+                if(!empty($attrs)) {
+                    $attr_names=array();
+                    foreach ($attrs as $attr) {
+                        $attr_options = $attr->get_options();
+                        foreach ($attr_options as $attr_option) {
+                            $attr_name = get_term($attr_option);
+                            if($attr_name) {
+                                $taxonomy = $attr_name->taxonomy;
+                                if($attr_name->taxonomy=='pa_' . $options['iban_slag'] || $attr_name->taxonomy==$options['iban_slag'])
+                                    $attr_names[] = $attr_name->name;
+                            }
+                        }
+                        
+                    }
+                    $feed_product->iban = implode(",", $attr_names);
+                }
+            }
+            
 
             $categories_id = $product->get_category_ids();
             if(!empty($categories_id)) {

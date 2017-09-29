@@ -95,7 +95,12 @@ if (!class_exists('WSkroutz_Admin')) {
             
             add_settings_field(
                     $this->fields['manufacturer'], __('Manufacturer Slug', $this->text), array($this, 'manufacturer_page_render'), $this->settings_page, $taxonomy_section
-            );            
+            );
+            
+            add_settings_field(
+                $this->fields['iban'], __('IBAN Slug', $this->text), array($this, 'iban_page_render'), $this->settings_page, $taxonomy_section
+            );
+            
             
             $options = get_option ($this->settings_page);
             if (false === $options) {
@@ -153,6 +158,15 @@ if (!class_exists('WSkroutz_Admin')) {
             ?>
             <input value="<?php echo $options[$this->fields['manufacturer']]; ?>" name="<?php echo "{$this->settings_page}[" . "{$this->fields['manufacturer']}]"; ?>" class="form-control" placeholder="<?php _e("Manufacturer Slug", $this->text); ?>"/>
             <p class="description"><?php _e("The manufacturer slug. That is the name of either the taxonomy name or the arbute of the manufacturer.", $this->text); ?></p>
+            <?php
+        }
+        
+        public function iban_page_render($args) {
+            $options = get_option($this->settings_page);
+            if($options===false || empty($options)) $options = get_default_options_settings();
+            ?>
+            <input value="<?php echo $options[$this->fields['iban']]; ?>" name="<?php echo "{$this->settings_page}[" . "{$this->fields['iban']}]"; ?>" class="form-control" placeholder="<?php _e("IBAN Slug", $this->text); ?>"/>
+            <p class="description"><?php _e("The iban slug. That is the name of either the taxonomy name or the arbute of the iban.", $this->text); ?></p>
             <?php
         }
 
