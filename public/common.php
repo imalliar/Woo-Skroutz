@@ -15,8 +15,10 @@ function get_options_fields($field='') {
     $fields = array(
         'inStock' => 'delivery_days_in_stock', 
         'outOfStock' => 'delivery_days_out_of_stock', 
-        'manufacturer' => 'manufacturer_slag',
-        'iban' => 'iban_slag'
+        'manufacturer' => 'manufacturer_slug',
+        'iban' => 'iban_slug',
+        'color' => 'color_slug',
+        'size' => 'size_slug'
     );    
     
     return empty($field) ? $fields : $fields[$field];
@@ -26,8 +28,10 @@ function get_default_options_settings() {
     $defaults = array(
         'delivery_days_in_stock' => 1,
         'delivery_days_out_of_stock' => 5,
-        'manufacturer_slag' => '',
-        'iban_slag' => ''
+        'manufacturer_slug' => '',
+        'iban_slug' => '',
+        'color_slug' => '',
+        'size_slug' => ''
     );
     return $defaults;
 }
@@ -57,4 +61,41 @@ function get_category_ancestors($cid, $seperator=' > '){
     return implode($seperator, array_reverse($result));
 }
 
+function get_product_attribute($product, $slug) {
+    $options = get_option(WOO_SKROUTZ_SETTINGS_PAGE);
+    if ($options === false || empty($options)) $options = get_default_options_settings();
+    $result='';
+    
+    $terms = wc_get_product_term_ids($product->get_id(), $options[$slug]);
+    if(!empty($terms)) {
+        $term_names=array();
+        foreach ($terms as $term) {
+            $man = get_term($term);
+            $term_names[]=$man->name;
+        }
+        $result = implode(",", $term_names);
+    }
+    if(empty($result)) {
+        $attrs = $product->get_attributes();
+        
+        if(!empty($attrs)) {
+            $attr_names=array();
+            foreach ($attrs as $attr) {
+                $attr_options = $attr->get_options();
+                foreach ($attr_options as $attr_option) {
+                    $attr_name = get_term($attr_option);
+                    if($attr_name) {
+                        $taxonomy = $attr_name->taxonomy;
+                        if($attr_name->taxonomy=='pa_' . $options[$slug] || $attr_name->taxonomy==$options[$slug])
+                            $attr_names[] = $attr_name->name;
+                    }
+                }
+                //$attr_names[]=implode("-", $attr->get_options());
+                
+            }
+            $result = implode(",", $attr_names);
+        }
+    }
+    return $result;
+}
 

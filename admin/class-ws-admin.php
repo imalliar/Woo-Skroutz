@@ -101,6 +101,14 @@ if (!class_exists('WSkroutz_Admin')) {
                 $this->fields['iban'], __('IBAN Slug', $this->text), array($this, 'iban_page_render'), $this->settings_page, $taxonomy_section
             );
             
+            add_settings_field(
+                $this->fields['color'], __('Color Slug', $this->text), array($this, 'color_page_render'), $this->settings_page, $taxonomy_section
+            );
+            
+            add_settings_field(
+                $this->fields['size'], __('Size Slug', $this->text), array($this, 'size_page_render'), $this->settings_page, $taxonomy_section
+            );
+            
             
             $options = get_option ($this->settings_page);
             if (false === $options) {
@@ -157,7 +165,7 @@ if (!class_exists('WSkroutz_Admin')) {
             if($options===false || empty($options)) $options = get_default_options_settings();
             ?>
             <input value="<?php echo $options[$this->fields['manufacturer']]; ?>" name="<?php echo "{$this->settings_page}[" . "{$this->fields['manufacturer']}]"; ?>" class="form-control" placeholder="<?php _e("Manufacturer Slug", $this->text); ?>"/>
-            <p class="description"><?php _e("The manufacturer slug. That is the name of either the taxonomy name or the arbute of the manufacturer.", $this->text); ?></p>
+            <p class="description"><?php _e("The manufacturer slug. That is the name of either the taxonomy name or the attribute of the manufacturer.", $this->text); ?></p>
             <?php
         }
         
@@ -166,10 +174,30 @@ if (!class_exists('WSkroutz_Admin')) {
             if($options===false || empty($options)) $options = get_default_options_settings();
             ?>
             <input value="<?php echo $options[$this->fields['iban']]; ?>" name="<?php echo "{$this->settings_page}[" . "{$this->fields['iban']}]"; ?>" class="form-control" placeholder="<?php _e("IBAN Slug", $this->text); ?>"/>
-            <p class="description"><?php _e("The iban slug. That is the name of either the taxonomy name or the arbute of the iban.", $this->text); ?></p>
+            <p class="description"><?php _e("The iban slug. That is the name of either the taxonomy name or the attribute of the iban of the product.", $this->text); ?></p>
+            <?php
+        }
+        
+        
+        public function color_page_render($args) {
+            $options = get_option($this->settings_page);
+            if($options===false || empty($options)) $options = get_default_options_settings();
+            ?>
+            <input value="<?php echo $options[$this->fields['color']]; ?>" name="<?php echo "{$this->settings_page}[" . "{$this->fields['color']}]"; ?>" class="form-control" placeholder="<?php _e("Color Slug", $this->text); ?>"/>
+            <p class="description"><?php _e("The color slug. That is the name of either the taxonomy name or the attribute of the color of the product.", $this->text); ?></p>
             <?php
         }
 
+        public function size_page_render($args) {
+            $options = get_option($this->settings_page);
+            if($options===false || empty($options)) $options = get_default_options_settings();
+            ?>
+            <input value="<?php echo $options[$this->fields['size']]; ?>" name="<?php echo "{$this->settings_page}[" . "{$this->fields['size']}]"; ?>" class="form-control" placeholder="<?php _e("Size Slug", $this->text); ?>"/>
+            <p class="description"><?php _e("The size slug. That is the name of either the taxonomy name or the attribute of the size of the product.", $this->text); ?></p>
+            <?php
+        }
+        
+        
         public function delivery_settings_section_callback($args) {
             ?>
             <p class="description"><?php _e("Product's shipping availability as used throughout your shop. Skroutz uses a fixed set of availability descriptions that will be crosslinked to the ones provided in your feed.", $this->text); ?></p>

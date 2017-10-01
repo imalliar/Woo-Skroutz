@@ -32,7 +32,7 @@ function get_woocommerce_product_list() {
     $full_product_list = array();
     $options = get_option(WOO_SKROUTZ_SETTINGS_PAGE);
     if ($options === false || empty($options)) $options = get_default_options_settings();
-    $manufacturer = $options['manufacturer_slag'];
+    $manufacturer = $options['manufacturer_slug'];
 
     $loop = new WP_Query(array('post_type' => array('product'), 'posts_per_page' => -1));
 
@@ -86,69 +86,12 @@ function get_woocommerce_product_list() {
                 $feed_product->inStock = "N";
                 $feed_product->availability = get_delivery_messages($options[get_options_fields('outOfStock')]);
             }
-                        
-            $terms = wc_get_product_term_ids($product->get_id(), $options['manufacturer_slag']);        
-            if(!empty($terms)) {
-                $term_names=array();
-                foreach ($terms as $term) {
-                    $man = get_term($term);
-                    $term_names[]=$man->name;
-                }
-                $feed_product->manufacturer = implode(",", $term_names);
-            }
-            if(!$feed_product->manufacturer) {
-                $attrs = $product->get_attributes();
-
-                if(!empty($attrs)) {
-                    $attr_names=array();
-                    foreach ($attrs as $attr) {
-                        $attr_options = $attr->get_options();
-                        foreach ($attr_options as $attr_option) {                            
-                            $attr_name = get_term($attr_option);
-                            if($attr_name) {
-                                $taxonomy = $attr_name->taxonomy;
-                                if($attr_name->taxonomy=='pa_' . $options['manufacturer_slag'] || $attr_name->taxonomy==$options['manufacturer_slag'])
-                                    $attr_names[] = $attr_name->name;
-                            }
-                        }
-                        //$attr_names[]=implode("-", $attr->get_options());
-                        
-                    }
-                    $feed_product->manufacturer = implode(",", $attr_names);                    
-                }                
-            }
             
-            $terms = wc_get_product_term_ids($product->get_id(), $options['iban_slag']);
-            if(!empty($terms)) {
-                $term_names=array();
-                foreach ($terms as $term) {
-                    $man = get_term($term);
-                    $term_names[]=$man->name;
-                }
-                $feed_product->iban = implode(",", $term_names);
-            }
-            if(!$feed_product->iban) {
-                $attrs = $product->get_attributes();
-                
-                if(!empty($attrs)) {
-                    $attr_names=array();
-                    foreach ($attrs as $attr) {
-                        $attr_options = $attr->get_options();
-                        foreach ($attr_options as $attr_option) {
-                            $attr_name = get_term($attr_option);
-                            if($attr_name) {
-                                $taxonomy = $attr_name->taxonomy;
-                                if($attr_name->taxonomy=='pa_' . $options['iban_slag'] || $attr_name->taxonomy==$options['iban_slag'])
-                                    $attr_names[] = $attr_name->name;
-                            }
-                        }
-                        
-                    }
-                    $feed_product->iban = implode(",", $attr_names);
-                }
-            }
+            $feed_product->manufacturer = get_product_attribute($product, 'manufacturer_slug');
+            $feed_product->iban = get_product_attribute($product, 'iban_slug');
+            $feed_product->color = get_product_attribute($product, 'color_slug');
+            $feed_product->size = get_product_attribute($product, 'size_slug');
             
-
             $categories_id = $product->get_category_ids();
             if(!empty($categories_id)) {
                 $categories = array();
