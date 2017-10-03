@@ -22,8 +22,8 @@ if (!class_exists('WSkroutz_Admin')) {
         private $name = WOO_SKROUTZ_NAME;
         private $fields;
         private $delivery_messages;
-
-        public function __construct() {
+                
+        public function __construct() {            
             $this->delivery_messages = get_delivery_messages();
             $this->fields = get_options_fields();
         }
@@ -161,39 +161,75 @@ if (!class_exists('WSkroutz_Admin')) {
         }
         
         public function manufacturer_page_render($args) {
+            $attribute_taxonomies = wc_get_attribute_taxonomies();
             $options = get_option($this->settings_page);
             if($options===false || empty($options)) $options = get_default_options_settings();
             ?>
-            <input value="<?php echo $options[$this->fields['manufacturer']]; ?>" name="<?php echo "{$this->settings_page}[" . "{$this->fields['manufacturer']}]"; ?>" class="form-control" placeholder="<?php _e("Manufacturer Slug", $this->text); ?>"/>
-            <p class="description"><?php _e("The manufacturer slug. That is the name of either the taxonomy name or the attribute of the manufacturer.", $this->text); ?></p>
+            <select  name="<?php echo "{$this->settings_page}[" . "{$this->fields['manufacturer']}]"; ?>" class="form-control">
+            	<?php
+            	   foreach ($attribute_taxonomies as $taxonomy) {
+            	?>
+            		<option <?php selected($options[$this->fields['manufacturer']], $taxonomy->attribute_name); ?> value='<?php echo $taxonomy->attribute_name ?>' ><?php echo $taxonomy->attribute_label; ?></option>
+            	<?php 
+            	   }
+            	?>
+            </select>                 
+            <p class="description"><?php _e("The manufacturer attribute. That is the name of the attribute that contains the manufacturer of the product.", $this->text); ?></p>
             <?php
         }
         
         public function iban_page_render($args) {
+            $attribute_taxonomies = wc_get_attribute_taxonomies();
             $options = get_option($this->settings_page);
             if($options===false || empty($options)) $options = get_default_options_settings();
             ?>
-            <input value="<?php echo $options[$this->fields['iban']]; ?>" name="<?php echo "{$this->settings_page}[" . "{$this->fields['iban']}]"; ?>" class="form-control" placeholder="<?php _e("IBAN Slug", $this->text); ?>"/>
-            <p class="description"><?php _e("The iban slug. That is the name of either the taxonomy name or the attribute of the iban of the product.", $this->text); ?></p>
+            <select  name="<?php echo "{$this->settings_page}[" . "{$this->fields['iban']}]"; ?>" class="form-control">
+            	<?php
+            	   foreach ($attribute_taxonomies as $taxonomy) {
+            	?>
+            		<option <?php selected($options[$this->fields['iban']], $taxonomy->attribute_name); ?> value='<?php echo $taxonomy->attribute_name ?>' ><?php echo $taxonomy->attribute_label; ?></option>
+            	<?php 
+            	   }
+            	?>
+            </select>                 
+            <p class="description"><?php _e("The iban attribute. That is the name of the attribute that contains the iban of the product.", $this->text); ?></p>
             <?php
         }
         
         
         public function color_page_render($args) {
+            $attribute_taxonomies = wc_get_attribute_taxonomies();
             $options = get_option($this->settings_page);
             if($options===false || empty($options)) $options = get_default_options_settings();
             ?>
-            <input value="<?php echo $options[$this->fields['color']]; ?>" name="<?php echo "{$this->settings_page}[" . "{$this->fields['color']}]"; ?>" class="form-control" placeholder="<?php _e("Color Slug", $this->text); ?>"/>
-            <p class="description"><?php _e("The color slug. That is the name of either the taxonomy name or the attribute of the color of the product.", $this->text); ?></p>
+            <select  name="<?php echo "{$this->settings_page}[" . "{$this->fields['color']}]"; ?>" class="form-control">
+            	<?php
+            	   foreach ($attribute_taxonomies as $taxonomy) {
+            	?>
+            		<option <?php selected($options[$this->fields['color']], $taxonomy->attribute_name); ?> value='<?php echo $taxonomy->attribute_name ?>' ><?php echo $taxonomy->attribute_label; ?></option>
+            	<?php 
+            	   }
+            	?>
+            </select>           
+            <p class="description"><?php _e("The color attribute. That is the name of the attribute that contains the color of the product.", $this->text); ?></p>
             <?php
         }
 
         public function size_page_render($args) {
+            $attribute_taxonomies = wc_get_attribute_taxonomies();            
             $options = get_option($this->settings_page);
             if($options===false || empty($options)) $options = get_default_options_settings();
             ?>
-            <input value="<?php echo $options[$this->fields['size']]; ?>" name="<?php echo "{$this->settings_page}[" . "{$this->fields['size']}]"; ?>" class="form-control" placeholder="<?php _e("Size Slug", $this->text); ?>"/>
-            <p class="description"><?php _e("The size slug. That is the name of either the taxonomy name or the attribute of the size of the product.", $this->text); ?></p>
+            <select  name="<?php echo "{$this->settings_page}[" . "{$this->fields['size']}]"; ?>" class="form-control">
+            	<?php
+            	   foreach ($attribute_taxonomies as $taxonomy) {
+            	?>
+            		<option <?php selected($options[$this->fields['size']], $taxonomy->attribute_name); ?> value='<?php echo $taxonomy->attribute_name ?>' ><?php echo $taxonomy->attribute_label; ?></option>
+            	<?php 
+            	   }
+            	?>
+            </select>           
+            <p class="description"><?php _e("The size attribute. That is the name of the attribute that contains the size of the product.", $this->text); ?></p>
             <?php
         }
         

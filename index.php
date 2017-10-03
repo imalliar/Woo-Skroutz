@@ -92,6 +92,8 @@ function get_woocommerce_product_list() {
             $feed_product->color = get_product_attribute($product, 'color_slug');
             $feed_product->size = get_product_attribute($product, 'size_slug');
             
+            $shipping_class= $product->get_shipping_class();
+                        
             $categories_id = $product->get_category_ids();
             if(!empty($categories_id)) {
                 $categories = array();
@@ -108,22 +110,12 @@ function get_woocommerce_product_list() {
     wp_reset_query();
     // sort into alphabetical order, by title
     sort($full_product_list);
-
+    print_r($full_product_list);
+    die;
+    
     return $full_product_list;
 }
 
-function getProducts() {
-    global $wpdb;
-
-    $options = get_option(WOO_SKROUTZ_SETTINGS_PAGE);
-    if ($options === false || empty($options))
-        $options = get_default_options_settings();
-    $inStock = $options['delivery_days_in_stock'];
-    $outOfStock = $options['delivery_days_out_of_stock'];
-
-    $full_product_list = array();
-    $loop = new WP_Query(array('post_type' => array('product', 'product_variation'), 'post_status' => 'publish', 'posts_per_page' => -1));
-}
 
 get_woocommerce_product_list();
 

@@ -99,3 +99,17 @@ function get_product_attribute($product, $slug) {
     return $result;
 }
 
+function getProducts() {
+    global $wpdb;
+    
+    $options = get_option(WOO_SKROUTZ_SETTINGS_PAGE);
+    if ($options === false || empty($options))
+        $options = get_default_options_settings();
+        $inStock = $options['delivery_days_in_stock'];
+        $outOfStock = $options['delivery_days_out_of_stock'];
+        
+        $full_product_list = array();
+        $loop = new WP_Query(array('post_type' => array('product', 'product_variation'), 'post_status' => 'publish', 'posts_per_page' => -1));
+}
+
+
