@@ -91,9 +91,8 @@ function get_woocommerce_product_list() {
             $feed_product->iban = get_product_attribute($product, 'iban_slug');
             $feed_product->color = get_product_attribute($product, 'color_slug');
             $feed_product->size = get_product_attribute($product, 'size_slug');
-            
-            $terms = get_the_terms( $product->get_id(), 'product_shipping_class' );
-                        
+          
+
             $categories_id = $product->get_category_ids();
             if(!empty($categories_id)) {
                 $categories = array();

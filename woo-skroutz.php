@@ -17,8 +17,10 @@ defined('ABSPATH') or die("Restricted access!");
 define('__ROOT__', dirname(__FILE__)); 
 
 $plugin_data = get_file_data(__FILE__, 
-    array('name' => 'Plugin Name', 
-    'version' => 'Version', 'text' => 'Text Domain'));
+    array(
+        'name' => 'Plugin Name', 
+        'version' => 'Version', 
+        'text' => 'Text Domain'));
 
 require_once plugin_dir_path(__FILE__) . '/public/common.php';
 

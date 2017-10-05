@@ -11,6 +11,9 @@ defined('ABSPATH') or die("Restricted access!");
  * */
 if (!class_exists('WSkroutz_Admin')) {
 
+    global $woocommerce;
+    global $current_user;
+        
     class WSkroutz_Admin {
 
         private $prefix = WOO_SKROUTZ_PREFIX;
@@ -107,6 +110,13 @@ if (!class_exists('WSkroutz_Admin')) {
             
             add_settings_field(
                 $this->fields['size'], __('Size Slug', $this->text), array($this, 'size_page_render'), $this->settings_page, $taxonomy_section
+            );
+
+            add_settings_section(
+                $shipping_section, __('Shipping settings', $this->text), array($this, 'shipping_settings_section_callback'), $this->settings_page);
+
+            add_settings_field(
+                $this->fields['country'], __('Country', $this->text), array($this, 'country_page_render'), $this->settings_page, $shipping_section
             );
             
             
@@ -245,6 +255,32 @@ if (!class_exists('WSkroutz_Admin')) {
         public function taxonomy_settings_section_callback($args) {
             ?>
             <p class="description"><?php _e("Taxonomy settings for additional information about the shop. For instance Manufacturer.", $this->text); ?></p>
+            <?php
+        }
+        
+        public function shipping_settings_section_callback($args) {
+            ?>
+            <p class="description"><?php _e("Shipping settings in order to calculates the shipping price of he xml. The same settings will apply on all products.", $this->text); ?></p>
+            <?php
+        }
+        
+        public function country_page_render($args) {
+            $countries_obj   = new WC_Countries();
+            $countries   = $countries_obj->__get('countries');
+
+            ?>
+			<select name="<?php echo "{$this->settings_page}[" . "{$this->fields['country']}]"; ?>" class="form-control">
+				<option value=""><?php _e( 'Select a country', $this->text ); ?></option>
+				<?php
+					foreach( $countries as $key => $value ) {
+					    ?>
+            			<option <?php selected($options[$this->fields['country']], esc_attr($key)); ?> value='<?php echo esc_attr($key); ?>' ><?php echo  esc_html( $value ); ?></option>
+            			<?php 
+						//echo '<option value="' . esc_attr( $key ) . '"' . selected( $current_cc, esc_attr( $key ), false ) . '>' . esc_html( $value ) . '</option>';
+					}
+				?>
+			</select>
+            <p class="description"><?php _e("The manufacturer attribute. That is the name of the attribute that contains the manufacturer of the product.", $this->text); ?></p>
             <?php
         }
 

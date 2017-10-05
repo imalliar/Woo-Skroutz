@@ -18,20 +18,29 @@ function get_options_fields($field='') {
         'manufacturer' => 'manufacturer_slug',
         'iban' => 'iban_slug',
         'color' => 'color_slug',
-        'size' => 'size_slug'
+        'size' => 'size_slug',
+        'country' => 'country',
+        'state' => 'state',
+        'zip' => 'zip',
+        'shipping' => 'shipping_method'
     );    
     
     return empty($field) ? $fields : $fields[$field];
 }
 
 function get_default_options_settings() {
+    global $woocommerce;
+    $d = WC()->customer->get_shipping_country();
+    
+    
     $defaults = array(
         'delivery_days_in_stock' => 1,
         'delivery_days_out_of_stock' => 5,
         'manufacturer_slug' => '',
         'iban_slug' => '',
         'color_slug' => '',
-        'size_slug' => ''
+        'size_slug' => '',
+        'country' => $woocommerce->customer->get_shipping_country()        
     );
     return $defaults;
 }
