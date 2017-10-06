@@ -29,10 +29,6 @@ function get_options_fields($field='') {
 }
 
 function get_default_options_settings() {
-    global $woocommerce;
-    $d = WC()->customer->get_shipping_country();
-    
-    
     $defaults = array(
         'delivery_days_in_stock' => 1,
         'delivery_days_out_of_stock' => 5,
@@ -40,7 +36,10 @@ function get_default_options_settings() {
         'iban_slug' => '',
         'color_slug' => '',
         'size_slug' => '',
-        'country' => $woocommerce->customer->get_shipping_country()        
+        'country' => '',
+        'state' => '',
+        'zip' => '',
+        'shiping_method' => ''
     );
     return $defaults;
 }

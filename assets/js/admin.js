@@ -4,5 +4,10 @@ jQuery(document).ready(function($) {
         setTimeout(function() {
             $(".updated").fadeOut();
         }, 10000);
-    }    
+    } 
+    
+    $('#country').on('changed.bs.select', function() {
+    	var value = $('#country').selectpicker('val');
+		alert(value);
+    });
 });    
