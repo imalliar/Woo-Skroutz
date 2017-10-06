@@ -8,6 +8,6 @@ jQuery(document).ready(function($) {
     
     $('#country').on('changed.bs.select', function() {
     	var value = $('#country').selectpicker('val');
-		alert(value);
+		
     });
 });    
