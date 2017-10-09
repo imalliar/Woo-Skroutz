@@ -39,7 +39,7 @@ function get_default_options_settings() {
         'country' => '',
         'state' => '',
         'zip' => '',
-        'shiping_method' => ''
+        'shipping_method' => ''
     );
     return $defaults;
 }

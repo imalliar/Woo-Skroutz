@@ -60,7 +60,7 @@ if (!class_exists('WSkroutz_Admin')) {
         }
 
         public function add_textdomain() {
-            load_plugin_textdomain(WOO_SKROUTZ_TEXT, false, $this->dir . '/languages/');
+            load_plugin_textdomain($this->text, false, $this->dir . '/languages/');
         }
         
         public function update_field_country($new_value, $old_value) {
@@ -127,7 +127,7 @@ if (!class_exists('WSkroutz_Admin')) {
             add_settings_field(
                 $this->fields['country'], __('Country', $this->text), array($this, 'country_page_render'), $this->settings_page, $shipping_section
             );
-            /*
+            
             add_settings_field(
                 $this->fields['state'], __('State', $this->text), array($this, 'state_page_render'), $this->settings_page, $shipping_section
             );
@@ -139,7 +139,7 @@ if (!class_exists('WSkroutz_Admin')) {
             add_settings_field(
                 $this->fields['shipping'], __('Shipping Method', $this->text), array($this, 'shipping_page_render'), $this->settings_page, $shipping_section
             );
-            */
+            
             
             $options = get_option ($this->settings_page);
             if (false === $options) {
@@ -197,7 +197,7 @@ if (!class_exists('WSkroutz_Admin')) {
             if($options===false || empty($options)) $options = get_default_options_settings();
             ?>
             <select  name="<?php echo "{$this->settings_page}[" . "{$this->fields['manufacturer']}]"; ?>" class="form-control selectpicker">
-            	<option <?php selected ($options[$this->fields['manufacturer']], ''); ?> value=''><?php _e('Please select manufacturer attribute'); ?></option>
+            	<option <?php selected ($options[$this->fields['manufacturer']], ''); ?> value=''><?php _e('Please select manufacturer attribute', $this->text); ?></option>
             	<?php
             	   foreach ($attribute_taxonomies as $taxonomy) {
             	?>
@@ -216,7 +216,7 @@ if (!class_exists('WSkroutz_Admin')) {
             if($options===false || empty($options)) $options = get_default_options_settings();
             ?>
             <select  name="<?php echo "{$this->settings_page}[" . "{$this->fields['iban']}]"; ?>" class="form-control selectpicker">
-            	<option <?php selected ($options[$this->fields['iban']], ''); ?> value=''><?php _e('Please select iban attribute'); ?></option>
+            	<option <?php selected ($options[$this->fields['iban']], ''); ?> value=''><?php _e('Please select iban attribute', $this->text); ?></option>
             	<?php
             	   foreach ($attribute_taxonomies as $taxonomy) {
             	?>
@@ -236,7 +236,7 @@ if (!class_exists('WSkroutz_Admin')) {
             if($options===false || empty($options)) $options = get_default_options_settings();
             ?>
             <select  name="<?php echo "{$this->settings_page}[" . "{$this->fields['color']}]"; ?>" class="form-control selectpicker">
-            	<option <?php selected ($options[$this->fields['color']], ''); ?> value=''><?php _e('Please select color attribute'); ?></option>
+            	<option <?php selected ($options[$this->fields['color']], ''); ?> value=''><?php _e('Please select color attribute', $this->text); ?></option>
             	<?php
             	   foreach ($attribute_taxonomies as $taxonomy) {
             	?>
@@ -255,7 +255,7 @@ if (!class_exists('WSkroutz_Admin')) {
             if($options===false || empty($options)) $options = get_default_options_settings();
             ?>
             <select  name="<?php echo "{$this->settings_page}[" . "{$this->fields['size']}]"; ?>" class="form-control selectpicker">
-            	<option <?php selected ($options[$this->fields['size']], ''); ?> value=''><?php _e('Please select size attribute'); ?></option>
+            	<option <?php selected ($options[$this->fields['size']], ''); ?> value=''><?php _e('Please select size attribute', $this->text); ?></option>
             	<?php
             	   foreach ($attribute_taxonomies as $taxonomy) {
             	?>
@@ -309,7 +309,7 @@ if (!class_exists('WSkroutz_Admin')) {
 					}
 				?>
 			</select>
-            <p class="description"><?php _e("The manufacturer attribute. That is the name of the attribute that contains the manufacturer of the product.", $this->text); ?></p>
+            <p class="description"><?php _e("The country that the shipping cost calculator will use as reference. This country should be the same for all products.", $this->text); ?></p>
             <?php
         }
         
@@ -320,18 +320,49 @@ if (!class_exists('WSkroutz_Admin')) {
             $default_county_states = $countries_obj->get_states( $default_country );
             
             ?>
-			<select name="<?php echo "{$this->settings_page}[" . "{$this->fields['country']}]"; ?>" class="form-control selectpicker">
-				<option value=""><?php _e( 'Select a country', $this->text ); ?></option>
+			<select name="<?php echo "{$this->settings_page}[" . "{$this->fields['state']}]"; ?>" class="form-control selectpicker">
+				<option value=""><?php _e( 'Select a state', $this->text ); ?></option>				
 				<?php
+				/*
 					foreach( $countries as $key => $value ) {
 					    ?>
             			<option <?php selected($options[$this->fields['country']], esc_attr($key)); ?> value='<?php echo esc_attr($key); ?>' ><?php echo  esc_html( $value ); ?></option>
             			<?php 
 						//echo '<option value="' . esc_attr( $key ) . '"' . selected( $current_cc, esc_attr( $key ), false ) . '>' . esc_html( $value ) . '</option>';
 					}
+					*/
 				?>
 			</select>
-            <p class="description"><?php _e("The manufacturer attribute. That is the name of the attribute that contains the manufacturer of the product.", $this->text); ?></p>
+            <p class="description"><?php _e("The state that the shipping cost calculator will use as reference. This state should be the same for all products.", $this->text); ?></p>
+            <?php
+        }
+        
+        public function zip_page_render($args) {
+            $options = get_option($this->settings_page);
+            if($options===false || empty($options)) $options = get_default_options_settings();
+            ?>
+            <input type="text" class="form-control" name="<?php echo "{$this->settings_page}[" . "{$this->fields['zip']}]"; ?>" value="<?php  echo $options[$this->fields['zip']]; ?>" />
+            <p class="description"><?php _e("The zip that the shipping cost calculator will use as reference. This zip should be the same for all products.", $this->text); ?></p>
+            <?php
+        }
+        
+        public function shipping_page_render($args) {
+            $options = get_option($this->settings_page);
+            if($options===false || empty($options)) $options = get_default_options_settings();
+            
+            $methods = WC()->shipping()->load_shipping_methods()
+            ?>
+			<select name="<?php echo "{$this->settings_page}[" . "{$this->fields['state']}]"; ?>" class="form-control selectpicker">
+				<option value=""><?php _e( 'Select a shipping method', $this->text ); ?></option>				
+				<?php
+					foreach( $methods as $key => $value ) {
+					    ?>
+            			<option <?php selected($options[$this->fields['shipping']], esc_attr($key)); ?> value='<?php echo esc_attr($key); ?>' ><?php echo  esc_html( $value->method_title ); ?></option>
+            			<?php 
+					}
+				?>
+			</select>
+            <p class="description"><?php _e("The shiiping method that the shipping cost calculator will use as reference. This method should be the same for all products.", $this->text); ?></p>
             <?php
         }
 
