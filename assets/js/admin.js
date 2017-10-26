@@ -8,6 +8,8 @@ jQuery(document).ready(function($) {
     
     $('#country').on('changed.bs.select', function() {
     	var value = $('#country').selectpicker('val');
-		$.get()
+		$.get(ajaxurl, { 'action' : 'get_states' }, function(data) {
+			alert(data);
+		});
     });
 });    

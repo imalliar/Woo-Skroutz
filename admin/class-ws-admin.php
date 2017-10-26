@@ -40,10 +40,18 @@ if (!class_exists('WSkroutz_Admin')) {
             add_filter('plugin_action_links_' . WOO_SKROUTZ_BASE, array($this, 'add_settings_link'));
             add_filter('plugin_row_meta', array($this, 'add_plugin_row_meta'), 10, 2);
             add_filter( 'pre_update_option_country', array($this, 'update_field_country'), 10, 2 );
+            add_action( 'wp_ajax_get_states', array($this, 'get_states') );
+            
             $current_country = '';
         }
+        
+        public function get_states()
+        {
+            echo json_encode('Hi there');
+            die();
+        }
 
-        function add_plugin_row_meta($links, $file) {
+        public function add_plugin_row_meta($links, $file) {
             if (strpos($file, 'woo-skroutz') !== false) {
                 $new_links = array(
                     'donate' => '<a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=47RM5G4438SJJ&lc=GR&item_name=Woo%2dSkroutz&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted" target="_blank"><span class="dashicons dashicons-thumbs-up"></span> ' . __('Donate', $this->text) . '</a>'
@@ -341,7 +349,7 @@ if (!class_exists('WSkroutz_Admin')) {
             $options = get_option($this->settings_page);
             if($options===false || empty($options)) $options = get_default_options_settings();
             ?>
-            <input type="text" class="form-control" name="<?php echo "{$this->settings_page}[" . "{$this->fields['zip']}]"; ?>" value="<?php  echo $options[$this->fields['zip']]; ?>" />
+            <input type="text" class="form-control" name="<?php echo "{$this->settings_page}[" . "{$this->fields['zip']}]"; ?>" value="<?php  echo $options[$this->fields['zip']]; ?>"/>
             <p class="description"><?php _e("The zip that the shipping cost calculator will use as reference. This zip should be the same for all products.", $this->text); ?></p>
             <?php
         }
