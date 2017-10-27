@@ -47,7 +47,7 @@ if (!class_exists('WSkroutz_Admin')) {
         
         public function get_states()
         {
-            echo json_encode('Hi there');
+            echo json_encode(WC()->countries->get_states( $_GET['current_country'] ));
             die();
         }
 

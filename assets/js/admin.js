@@ -8,8 +8,15 @@ jQuery(document).ready(function($) {
     
     $('#country').on('changed.bs.select', function() {
     	var value = $('#country').selectpicker('val');
-		$.get(ajaxurl, { 'action' : 'get_states' }, function(data) {
-			alert(data);
+		$.get(ajaxurl, { 'action' : 'get_states', 'current_country' : value }, function(data) {
+			$('#country').html('');
+			if(data=='false') return;
+			$.each(data, function(i, item) {
+				$('#country').append($('<option>', {
+					value: item.value,
+					text: item.text
+				}));
+			});
 		});
     });
 });    
