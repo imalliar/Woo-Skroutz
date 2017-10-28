@@ -43,6 +43,8 @@ woo_skroutz_define_constants('PREFIX', 'woo-skroutz');
 woo_skroutz_define_constants('SETTINGS_PAGE', 'wskroutz');
 woo_skroutz_define_constants('SETTINGS_NAME', 'woo_skroutz_options_settings');
 
+
+
 if (is_admin()) {
     require_once WOO_SKROUTZ_PATH . '/admin/class-ws-admin.php';
     if (!defined('WSkroutz_Admin')) {

@@ -11,7 +11,6 @@ defined('ABSPATH') or die("Restricted access!");
  * */
 if (!class_exists('WSkroutz_Admin')) {
 
-    global $woocommerce;
     global $current_user;
         
     class WSkroutz_Admin {
@@ -32,7 +31,7 @@ if (!class_exists('WSkroutz_Admin')) {
             $this->fields = get_options_fields();
         }
 
-        public function init() {
+        public function init() {            
             add_action('init', array($this, 'add_textdomain'));
             add_action('admin_menu', array($this, 'add_admin_menu'));
             add_action('admin_init', array($this, 'register_options_init'));
@@ -78,7 +77,6 @@ if (!class_exists('WSkroutz_Admin')) {
         public function admin_enqueue_scripts($hook) {            
             $admin_settings_page = 'settings_page_' . $this->settings_page;
             if($hook!=$admin_settings_page) return;
-            
             
             // Load jQuery library
             wp_enqueue_script('jquery');

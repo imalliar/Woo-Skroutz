@@ -23,10 +23,18 @@
             </div>
         </div>		
     </h2>
-    <h1><?php echo esc_html(get_admin_page_title()); ?></h1>
-
+    
+    <?php if(class_exists( 'WooCommerce' )) { ?>
+    	<h1><?php echo esc_html(get_admin_page_title()); ?></h1>
+	<?php } ?>
 
     <div class="metabox-holder has-right-sidebar">
+
+	<?php if(!class_exists( 'WooCommerce' )) { ?>
+	<div class="error notice">
+    	<h5>You should install <a target="_blank" href="https://woocommerce.com/">WooCommerce</a> in order to use Woo Skroutz.</h5>
+	</div>
+	<?php } else { ?>
 
         <!-- Nav tabs -->
         <ul class="nav nav-tabs" role="tablist">
@@ -277,6 +285,8 @@
             </div>
 
         </div>
+        
+        <?php } ?>
 
     </div>
 
