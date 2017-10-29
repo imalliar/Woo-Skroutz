@@ -9,13 +9,18 @@ jQuery(document).ready(function($) {
     $('#country').on('changed.bs.select', function() {
     	var value = $('#country').selectpicker('val');
 		$.get(ajaxurl, { 'action' : 'get_states', 'current_country' : value }, function(data) {
-			$('#country').html('');
+			$('#state').html('');
+			 $('#state').selectpicker('refresh');
 			if(data=='false') return;
+			if($.type(data)=="string") {
+				data = JSON.parse(data);
+			}
 			$.each(data, function(i, item) {
-				$('#country').append($('<option>', {
+				$('#state').append($('<option>', {
 					value: item.value,
 					text: item.text
 				}));
+				$('#state').selectpicker('refresh');
 			});
 		});
     });

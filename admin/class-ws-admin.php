@@ -326,7 +326,7 @@ if (!class_exists('WSkroutz_Admin')) {
             $default_county_states = $countries_obj->get_states( $default_country );
             
             ?>
-			<select name="<?php echo "{$this->settings_page}[" . "{$this->fields['state']}]"; ?>" class="form-control selectpicker">
+			<select name="<?php echo "{$this->settings_page}[" . "{$this->fields['state']}]"; ?>" class="form-control selectpicker" id="state">
 				<option value=""><?php _e( 'Select a state', $this->text ); ?></option>				
 				<?php
 				/*
