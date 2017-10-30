@@ -1,5 +1,9 @@
 jQuery(document).ready(function($) {
-    // Remove the "successful" message after 3 seconds
+    $('.bootswitch').bootstrapSwitch();
+    
+    
+	
+	// Remove the "successful" message after 3 seconds
     if (".updated") {
         setTimeout(function() {
             $(".updated").fadeOut();
@@ -9,19 +13,18 @@ jQuery(document).ready(function($) {
     $('#country').on('changed.bs.select', function() {
     	var value = $('#country').selectpicker('val');
 		$.get(ajaxurl, { 'action' : 'get_states', 'current_country' : value }, function(data) {
-			$('#state').html('');
+			$('#state').find('option').not(':first').remove();
 			 $('#state').selectpicker('refresh');
 			if(data=='false') return;
-			if($.type(data)=="string") {
-				data = JSON.parse(data);
-			}
-			$.each(data, function(i, item) {
+			data = JSON.parse(data);
+			$.each(data, function(key, value) {
 				$('#state').append($('<option>', {
-					value: item.value,
-					text: item.text
+					value: key,
+					text: value
 				}));
-				$('#state').selectpicker('refresh');
 			});
+			$('#state').selectpicker('refresh');
+			
 		});
     });
 });    

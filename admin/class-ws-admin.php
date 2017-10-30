@@ -87,10 +87,17 @@ if (!class_exists('WSkroutz_Admin')) {
             wp_enqueue_script($this->prefix . '-bootstrap-js', $this->url . 'assets/bootstrap/bootstrap.min.js');
             wp_enqueue_script($this->prefix . '-bootstrap-select-js', $this->url . 'assets/bootstrap-select/bootstrap-select.min.js');
             wp_enqueue_style($this->prefix . '-bootstrap-select-css', $this->url . 'assets/bootstrap-select/bootstrap-select.min.css');
+            wp_enqueue_script($this->prefix . '-bootstrap-switch-js', $this->url . 'assets/bootstrap-switch/bootstrap-switch.min.js');
+            wp_enqueue_style($this->prefix . '-bootstrap-switch-css', $this->url . 'assets/bootstrap-switch/bootstrap-switch.min.css');
             
             //Custom assets
             wp_enqueue_style($this->prefix . '-admin', $this->url . 'assets/css/admin.css');
             wp_enqueue_script($this->prefix . '-admin-js', $this->url . 'assets/js/admin.js');
+            
+            wp_localize_script($this->prefix . '-admin', 'woo_skroutz_script_vars', array(
+                'yes' => __('Yes', $this->text),
+                'no' => __('No', $this->text)
+            ));
         }
 
         public function register_options_init() {
@@ -130,6 +137,10 @@ if (!class_exists('WSkroutz_Admin')) {
             add_settings_section(
                 $shipping_section, __('Shipping settings', $this->text), array($this, 'shipping_settings_section_callback'), $this->settings_page);
 
+            add_settings_field(
+                $this->fields['base_address'], __('Use Store Base Address', $this->text), array($this, 'base_address_page_render'), $this->settings_page, $shipping_section
+            );
+            
             add_settings_field(
                 $this->fields['country'], __('Country', $this->text), array($this, 'country_page_render'), $this->settings_page, $shipping_section
             );
@@ -305,7 +316,7 @@ if (!class_exists('WSkroutz_Admin')) {
             }
                         
             ?>
-			<select name="<?php echo "{$this->settings_page}[" . "{$this->fields['country']}]"; ?>" class="form-control selectpicker" data-live-search="tr" id='country'>
+			<select name="<?php echo "{$this->settings_page}[" . "{$this->fields['country']}]"; ?>" class="form-control selectpicker" data-live-search="true" id='country'>
 				<option value=""><?php _e( 'Select a country', $this->text ); ?></option>
 				<?php
 					foreach( $countries as $key => $value ) {
@@ -320,23 +331,28 @@ if (!class_exists('WSkroutz_Admin')) {
         }
         
         public function state_page_render($args) {
+            $options = get_option($this->settings_page);
+            if($options===false || empty($options)) $options = get_default_options_settings();
+            
             $countries_obj   = new WC_Countries();
             $countries   = $countries_obj->__get('countries');
-            $default_country = $countries_obj->get_base_country();
-            $default_county_states = $countries_obj->get_states( $default_country );
+            $cc = empty($options[$this->fields['country']]) ? $countries_obj->get_base_country() : $options[$this->fields['country']];
+           
+            $states =  $countries_obj->get_states( $cc );
+            
+            if($states==false) $states = [];
+            
+            $cs = empty($options[$this->fields['state']]) ? $countries_obj->get_base_state() : $options[$this->fields['state']];
             
             ?>
-			<select name="<?php echo "{$this->settings_page}[" . "{$this->fields['state']}]"; ?>" class="form-control selectpicker" id="state">
+			<select name="<?php echo "{$this->settings_page}[" . "{$this->fields['state']}]"; ?>" class="form-control selectpicker" id="state" data-live-search="true">
 				<option value=""><?php _e( 'Select a state', $this->text ); ?></option>				
 				<?php
-				/*
-					foreach( $countries as $key => $value ) {
-					    ?>
-            			<option <?php selected($options[$this->fields['country']], esc_attr($key)); ?> value='<?php echo esc_attr($key); ?>' ><?php echo  esc_html( $value ); ?></option>
-            			<?php 
-						//echo '<option value="' . esc_attr( $key ) . '"' . selected( $current_cc, esc_attr( $key ), false ) . '>' . esc_html( $value ) . '</option>';
-					}
-					*/
+				foreach( $states as $key => $value ) {
+				?>
+            		<option <?php selected($cs, esc_attr($key)); ?> value='<?php echo esc_attr($key); ?>' ><?php echo  esc_html( $value ); ?></option>
+            	<?php 
+				}
 				?>
 			</select>
             <p class="description"><?php _e("The state that the shipping cost calculator will use as reference. This state should be the same for all products.", $this->text); ?></p>
@@ -347,7 +363,7 @@ if (!class_exists('WSkroutz_Admin')) {
             $options = get_option($this->settings_page);
             if($options===false || empty($options)) $options = get_default_options_settings();
             ?>
-            <input type="text" class="form-control" name="<?php echo "{$this->settings_page}[" . "{$this->fields['zip']}]"; ?>" value="<?php  echo $options[$this->fields['zip']]; ?>"/>
+            <input <?php if($options[$this->fields['base_address']]==true) echo 'disabled="disabled"'; ?>  type="text" class="form-control" name="<?php echo "{$this->settings_page}[" . "{$this->fields['zip']}]"; ?>" value="<?php  echo $options[$this->fields['zip']]; ?>"/>
             <p class="description"><?php _e("The zip that the shipping cost calculator will use as reference. This zip should be the same for all products.", $this->text); ?></p>
             <?php
         }
@@ -370,6 +386,15 @@ if (!class_exists('WSkroutz_Admin')) {
 			</select>
             <p class="description"><?php _e("The shiiping method that the shipping cost calculator will use as reference. This method should be the same for all products.", $this->text); ?></p>
             <?php
+        }
+        
+        public function base_address_page_render($args) {
+            $options = get_option($this->settings_page);
+            if($options===false || empty($options)) $options = get_default_options_settings();
+            ?>
+            <input type="checkbox" data-on-text="<?php _e("Yes", $this->text); ?>" data-off-text="<?php _e("No", $this->text); ?>" class="form-control bootswitch" name="<?php echo "{$this->settings_page}[" . "{$this->fields['base_address']}]"; ?>" <?php checked( 1 == $options[$this->fields['base_address']]); ?> value="1"/>
+            <p class="description"><?php _e("If true the store base address will be used as reference to the calculation of the shipping cost.", $this->text); ?></p>
+            <?php            
         }
 
     }
