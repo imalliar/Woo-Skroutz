@@ -99,9 +99,7 @@ function get_product_attribute($product, $slug) {
                         if($attr_name->taxonomy=='pa_' . $options[$slug] || $attr_name->taxonomy==$options[$slug])
                             $attr_names[] = $attr_name->name;
                     }
-                }
-                //$attr_names[]=implode("-", $attr->get_options());
-                
+                }               
             }
             $result = implode(",", $attr_names);
         }

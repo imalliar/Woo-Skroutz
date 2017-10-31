@@ -1,7 +1,12 @@
+
 jQuery(document).ready(function($) {
     $('.bootswitch').bootstrapSwitch();
+           
+    $('.bootswitch').on('switchChange.bootstrapSwitch', function(event, state) {
+    	initShippingControls(state);
+    });    
     
-    
+    initShippingControls($('.bootswitch').bootstrapSwitch('state'));
 	
 	// Remove the "successful" message after 3 seconds
     if (".updated") {
@@ -28,3 +33,23 @@ jQuery(document).ready(function($) {
 		});
     });
 });    
+
+function initShippingControls(state) {
+	if(state) {
+		jQuery('#zip').prop('disabled', true);
+		
+		jQuery('#state').prop('disabled', true);
+		jQuery('#state').selectpicker('refresh');
+		
+		jQuery('#country').prop('disabled', true);
+		jQuery('#country').selectpicker('refresh');
+	} else {
+		jQuery('#zip').prop('disabled', false);    		
+		
+		jQuery('#state').prop('disabled', false);
+		jQuery('#state').selectpicker('refresh');		
+		
+		jQuery('#country').prop('disabled', false);
+		jQuery('#country').selectpicker('refresh');
+	}	
+}

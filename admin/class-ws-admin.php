@@ -316,7 +316,7 @@ if (!class_exists('WSkroutz_Admin')) {
             }
                         
             ?>
-			<select name="<?php echo "{$this->settings_page}[" . "{$this->fields['country']}]"; ?>" class="form-control selectpicker" data-live-search="true" id='country'>
+			<select name="<?php echo "{$this->settings_page}[" . "{$this->fields['country']}]"; ?>" class="form-control selectpicker" data-live-search="true" id='country' >
 				<option value=""><?php _e( 'Select a country', $this->text ); ?></option>
 				<?php
 					foreach( $countries as $key => $value ) {
@@ -363,7 +363,7 @@ if (!class_exists('WSkroutz_Admin')) {
             $options = get_option($this->settings_page);
             if($options===false || empty($options)) $options = get_default_options_settings();
             ?>
-            <input <?php if($options[$this->fields['base_address']]==true) echo 'disabled="disabled"'; ?>  type="text" class="form-control" name="<?php echo "{$this->settings_page}[" . "{$this->fields['zip']}]"; ?>" value="<?php  echo $options[$this->fields['zip']]; ?>"/>
+            <input id="zip" <?php if($options[$this->fields['base_address']]==true) echo 'disabled="disabled"'; ?>  type="text" class="form-control" name="<?php echo "{$this->settings_page}[" . "{$this->fields['zip']}]"; ?>" value="<?php  echo $options[$this->fields['zip']]; ?>"/>
             <p class="description"><?php _e("The zip that the shipping cost calculator will use as reference. This zip should be the same for all products.", $this->text); ?></p>
             <?php
         }
@@ -374,7 +374,7 @@ if (!class_exists('WSkroutz_Admin')) {
             
             $methods = WC()->shipping()->load_shipping_methods()
             ?>
-			<select name="<?php echo "{$this->settings_page}[" . "{$this->fields['state']}]"; ?>" class="form-control selectpicker">
+			<select id="shipping" name="<?php echo "{$this->settings_page}[" . "{$this->fields['shipping']}]"; ?>" class="form-control selectpicker">
 				<option value=""><?php _e( 'Select a shipping method', $this->text ); ?></option>				
 				<?php
 					foreach( $methods as $key => $value ) {
