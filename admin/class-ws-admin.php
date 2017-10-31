@@ -99,11 +99,32 @@ if (!class_exists('WSkroutz_Admin')) {
                 'no' => __('No', $this->text)
             ));
         }
+        
+        public function sanitize_callback($input) {
+            // Create our array for storing the validated options
+            $output = array();
+            
+            // Loop through each of the incoming options
+            foreach( $input as $key => $value ) {
+                
+                // Check to see if the current option has a value. If so, process it.
+                if( isset( $input[$key] ) ) {
+                    
+                    // Strip all HTML and PHP tags and properly handle quoted strings
+                    $output[$key] = strip_tags( stripslashes( $input[ $key ] ) );
+                    
+                } // end if
+                
+            } // end foreach
+            
+            // Return the array processing any additional functions filtered by this action
+            return apply_filters( array($this, 'sanitize_callback'), $output, $input );
+        }
 
         public function register_options_init() {
             $section = 'wskroutz_delivery_options_section';
             $taxonomy_section = 'wskroutz_taxonomy_options_section';
-            register_setting($this->settings_page, $this->settings_page);         
+            register_setting($this->settings_page, $this->settings_page, array(  'sanitize_callback' => array($this, 'sanitize_callback'), ));         
             
             add_settings_section(
                     $section, __('Delivery settings', $this->text), array($this, 'delivery_settings_section_callback'), $this->settings_page);
@@ -363,7 +384,7 @@ if (!class_exists('WSkroutz_Admin')) {
             $options = get_option($this->settings_page);
             if($options===false || empty($options)) $options = get_default_options_settings();
             ?>
-            <input id="zip" <?php if($options[$this->fields['base_address']]==true) echo 'disabled="disabled"'; ?>  type="text" class="form-control" name="<?php echo "{$this->settings_page}[" . "{$this->fields['zip']}]"; ?>" value="<?php  echo $options[$this->fields['zip']]; ?>"/>
+            <input id="zip" <?php if($options[$this->fields['base_address']]==true) echo 'disabled="disabled"'; ?>  type="text" class="form-control" name="<?php echo "{$this->settings_page}[" . "{$this->fields['zip']}]"; ?>" value="<?php  echo sanitize_text_field($options[$this->fields['zip']]); ?>"/>
             <p class="description"><?php _e("The zip that the shipping cost calculator will use as reference. This zip should be the same for all products.", $this->text); ?></p>
             <?php
         }
