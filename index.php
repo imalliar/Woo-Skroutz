@@ -34,6 +34,8 @@ function get_woocommerce_product_list() {
     if ($options === false || empty($options)) $options = get_default_options_settings();
     $manufacturer = $options['manufacturer_slug'];
 
+    get_woocommerce_shipping_cost();
+    
     $loop = new WP_Query(array('post_type' => array('product'), 'posts_per_page' => -1));
 
     while ($loop->have_posts()) :
@@ -113,6 +115,20 @@ function get_woocommerce_product_list() {
     die;
     
     return $full_product_list;
+}
+
+function get_woocommerce_shipping_cost() {
+    $options = get_option(WOO_SKROUTZ_SETTINGS_PAGE);
+    if ($options === false || empty($options)) $options = get_default_options_settings();
+    $package=array();
+    if($options['base_address']==true) {
+        $base_location = wc_get_base_location();
+        $package['destination']['country'] = $base_location['country'];
+        $package['destination']['state'] = $base_location['state'];
+        
+    }
+    $package['destination']['country'] = $_POST['calc_shipping_country'];
+    
 }
 
 
