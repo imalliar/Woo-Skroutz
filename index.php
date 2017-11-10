@@ -126,6 +126,7 @@ function get_woocommerce_shipping_cost() {
         $package['destination']['country'] = $base_location['country'];
         $package['destination']['state'] = $base_location['state'];
         
+        
     }
     $package['destination']['country'] = $_POST['calc_shipping_country'];
     
