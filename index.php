@@ -23,8 +23,9 @@ function createXML($feed_products) {
 
     foreach ($feed_products as $feed_product) {
         $product = $products->addChild('product');
-        $id = $product->addChild('id', $feed_product->$uniqueId);
+        $id = $product->addChild('id', $feed_product->uniqueId);
     }
+    return $xml;
 }
 
 
@@ -111,8 +112,6 @@ function get_woocommerce_product_list() {
     wp_reset_query();
     // sort into alphabetical order, by title
     sort($full_product_list);
-    print_r($full_product_list);
-    die;
     
     return $full_product_list;
 }
@@ -160,46 +159,8 @@ function get_woocommerce_shipping_cost() {
 }
 
 
-get_woocommerce_product_list();
-
-while ($loop->have_posts()) :
-    $loop->the_post();
-    $theid = get_the_ID();
-    if (get_post_type() == 'product_variation') {
-        $parent_id = wp_get_post_parent_id($theid);
-        $sku = get_post_meta($theid, '_sku', true);
-        $title = get_the_title($parent_id);
-        if ($sku == '') {
-            if ($parent_id == 0) {
-                // Remove unexpected orphaned variations.. set to auto-draft
-                $false_post = array();
-                $false_post['ID'] = $theid;
-                $false_post['post_status'] = 'auto-draft';
-                wp_update_post($false_post);
-                if (function_exists(add_to_debug))
-                    add_to_debug('false post_type set to auto-draft. id=' . $theid);
-            } else {
-                // there's no sku for this variation > copy parent sku to variation sku
-                // & remove the parent sku so the parent check below triggers
-                $sku = get_post_meta($parent_id, '_sku', true);
-                if (function_exists(add_to_debug))
-                    add_to_debug('empty sku id=' . $theid . 'parent=' . $parent_id . 'setting sku to ' . $sku);
-                update_post_meta($theid, '_sku', $sku);
-                update_post_meta($parent_id, '_sku', '');
-            }
-        }
-    } else {
-        $sku = get_post_meta($theid, '_sku', true);
-        $title = get_the_title();
-    }
-    $product = $products->addChild('product');
-    $product->name = NULL;
-    $product->name->addCData($title);
-    $product->addChild('uid', $theid);
-
-endwhile;
-
-
+$product_list = get_woocommerce_product_list();
+$xml = createXML($product_list);
 
 ob_clean();
 $dom = dom_import_simplexml($xml)->ownerDocument;
