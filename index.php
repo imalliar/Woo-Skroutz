@@ -34,7 +34,7 @@ function get_woocommerce_product_list() {
     if ($options === false || empty($options)) $options = get_default_options_settings();
     $manufacturer = $options['manufacturer_slug'];
 
-    get_woocommerce_shipping_cost();
+    $shipping_cost = get_woocommerce_shipping_cost();
     
     $loop = new WP_Query(array('post_type' => array('product'), 'posts_per_page' => -1));
 
@@ -93,7 +93,7 @@ function get_woocommerce_product_list() {
             $feed_product->iban = get_product_attribute($product, 'iban_slug');
             $feed_product->color = get_product_attribute($product, 'color_slug');
             $feed_product->size = get_product_attribute($product, 'size_slug');
-          
+            $feed_product->shippingCost = $shipping_cost;
 
             $categories_id = $product->get_category_ids();
             if(!empty($categories_id)) {
@@ -118,18 +118,45 @@ function get_woocommerce_product_list() {
 }
 
 function get_woocommerce_shipping_cost() {
-    $options = get_option(WOO_SKROUTZ_SETTINGS_PAGE);
-    if ($options === false || empty($options)) $options = get_default_options_settings();
-    $package=array();
-    if($options['base_address']==true) {
-        $base_location = wc_get_base_location();
-        $package['destination']['country'] = $base_location['country'];
-        $package['destination']['state'] = $base_location['state'];
+    $options = get_option(WOO_SKROUTZ_SETTINGS_PAGE);    
+    if ($options === false || empty($options)) $options = get_default_options_settings();    
+    $fields = get_options_fields();
+    if($options[$fields['shipping']]=='free_shipping' || $options[$fields['shipping']]=='local_pickup') return 0;
+    $package= array();
         
-        
+    if($options[$fields['base_address']]==1) {
+        $location = wc_get_base_location();
+        $package['destination']['country'] = $location['country'];
+        $package['destination']['state'] = $location['state'];
+        $countries_obj = new WC_Countries();        
+        $package['destination']['postcode'] = $countries_obj->get_base_state();
+    } else {
+        $package['destination']['country'] = $options[$fields['country']];
+        $package['destination']['state'] = $options[$fields['state']];
+        $package['destination']['postcode'] = $options[$fields['zip']];        
     }
-    $package['destination']['country'] = $_POST['calc_shipping_country'];
-    
+    $shipping_zone  = WC_Shipping_Zones::get_zone_matching_package( $package );
+	$all_methods = $shipping_zone->get_shipping_methods( true );
+	foreach($all_methods as $method)
+	{
+	    if($method->id==$options[$fields['shipping']]) {
+	        $total_cost = 0;
+	        if($method->fee != '')
+	        {
+	            $total_cost = $method->fee;
+	        }
+	        if($method->cost != '')
+	        {
+	            $total_cost = $total_cost + $method->cost;
+	        }
+	        if($method->cost_per_order != '')
+	        {
+	            $total_cost = $total_cost + $method->cost_per_order;
+	        }
+	        return $total_cost;
+	    }
+	}
+	return 0;    
 }
 
 
