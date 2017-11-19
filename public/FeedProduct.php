@@ -1,5 +1,8 @@
 <?php
 
+defined('ABSPATH') or die("Restricted access!");
+
+
 class FeedProduct {
     public $uniqueId;
     public $title;

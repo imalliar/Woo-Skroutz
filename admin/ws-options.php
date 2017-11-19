@@ -87,6 +87,7 @@
                             <div id="post-body-content" class="col-md-12">
                                 <form action="options.php" method="post">
                                     <?php
+                                    wp_nonce_field( 'skroutzoptions', 'skroutzoptionsnonce' );
                                     // output security fields for the registered setting "wskroutz"
                                     settings_fields($this->settings_page);
                                     // output setting sections and their fields
