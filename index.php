@@ -27,12 +27,16 @@ function createXML($feed_products) {
     foreach ($feed_products as $feed_product) {
         $product = $products->addChild('product');
         $id = $product->addChild('id', $feed_product->uniqueId);
+        $product->mpn=null;
+        $product->mpn->addCData(addslashes(trim($feed_product->mpn)));
     }
     return $xml;
 }
 
 
 function get_woocommerce_product_list() {
+    global $options;
+    
     $full_product_list = array();
     $manufacturer = $options->getManufacturer();
 
@@ -118,6 +122,8 @@ function get_woocommerce_product_list() {
 }
 
 function get_woocommerce_shipping_cost() {
+    global $options;
+    
     if($options->getShipping()=='free_shipping' || $options->getShipping()=='local_pickup') return 0;
     $package= array();
         
