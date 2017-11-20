@@ -14,6 +14,9 @@ require_once("../../../wp-load.php");
 require_once './public/common.php';
 require_once './public/SimpleXMLElementExtended.php';
 require_once './public/FeedProduct.php';
+require_once './public/Options.php';
+
+$options = new Options();
 
 function createXML($feed_products) {
     $xml = new SimpleXMLElementExtended('<?xml version="1.0" encoding="utf-8"?><webstore/>');
@@ -31,9 +34,7 @@ function createXML($feed_products) {
 
 function get_woocommerce_product_list() {
     $full_product_list = array();
-    $options = get_option(WOO_SKROUTZ_SETTINGS_PAGE);
-    if ($options === false || empty($options)) $options = get_default_options_settings();
-    $manufacturer = $options['manufacturer_slug'];
+    $manufacturer = $options->getManufacturer();
 
     $shipping_cost = get_woocommerce_shipping_cost();
     
@@ -84,10 +85,10 @@ function get_woocommerce_product_list() {
             $feed_product->productLink = $product->get_permalink();
             if($product->is_in_stock()) {
                 $feed_product->inStock = "Y";
-                $feed_product->availability = get_delivery_messages($options[get_options_fields('inStock')]);
+                $feed_product->availability = get_delivery_messages($options->getInStock());
             } else {
                 $feed_product->inStock = "N";
-                $feed_product->availability = get_delivery_messages($options[get_options_fields('outOfStock')]);
+                $feed_product->availability = get_delivery_messages($options->getOutOfStock());
             }
             
             $feed_product->manufacturer = get_product_attribute($product, 'manufacturer_slug');
@@ -117,28 +118,25 @@ function get_woocommerce_product_list() {
 }
 
 function get_woocommerce_shipping_cost() {
-    $options = get_option(WOO_SKROUTZ_SETTINGS_PAGE);    
-    if ($options === false || empty($options)) $options = get_default_options_settings();    
-    $fields = get_options_fields();
-    if($options[$fields['shipping']]=='free_shipping' || $options[$fields['shipping']]=='local_pickup') return 0;
+    if($options->getShipping()=='free_shipping' || $options->getShipping()=='local_pickup') return 0;
     $package= array();
         
-    if($options[$fields['base_address']]==1) {
+    if($options->getBaseAddress()==1) {
         $location = wc_get_base_location();
         $package['destination']['country'] = $location['country'];
         $package['destination']['state'] = $location['state'];
         $countries_obj = new WC_Countries();        
         $package['destination']['postcode'] = $countries_obj->get_base_state();
     } else {
-        $package['destination']['country'] = $options[$fields['country']];
-        $package['destination']['state'] = $options[$fields['state']];
-        $package['destination']['postcode'] = $options[$fields['zip']];        
+        $package['destination']['country'] = $options->getCountry();
+        $package['destination']['state'] = $options->getState();
+        $package['destination']['postcode'] = $options->getZip();        
     }
     $shipping_zone  = WC_Shipping_Zones::get_zone_matching_package( $package );
 	$all_methods = $shipping_zone->get_shipping_methods( true );
 	foreach($all_methods as $method)
 	{
-	    if($method->id==$options[$fields['shipping']]) {
+	    if($method->id==$options->getShipping()) {
 	        $total_cost = 0;
 	        if($method->fee != '')
 	        {

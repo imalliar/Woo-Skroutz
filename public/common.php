@@ -11,41 +11,6 @@ function get_delivery_messages($msg='') {
     return empty($msg) ? $delivery_messages : $delivery_messages[$msg];
 }
 
-function get_options_fields($field='') {
-    $fields = array(
-        'inStock' => 'delivery_days_in_stock', 
-        'outOfStock' => 'delivery_days_out_of_stock', 
-        'manufacturer' => 'manufacturer_slug',
-        'iban' => 'iban_slug',
-        'color' => 'color_slug',
-        'size' => 'size_slug',
-        'base_address' => 'base_address',
-        'country' => 'country',
-        'state' => 'state',
-        'zip' => 'zip',
-        'shipping' => 'shipping_method'
-    );    
-    
-    return empty($field) ? $fields : $fields[$field];
-}
-
-function get_default_options_settings() {
-    $defaults = array(
-        'delivery_days_in_stock' => 1,
-        'delivery_days_out_of_stock' => 5,
-        'manufacturer_slug' => '',
-        'iban_slug' => '',
-        'color_slug' => '',
-        'size_slug' => '',
-        'base_address' => true,
-        'country' => '',
-        'state' => '',
-        'zip' => '',
-        'shipping_method' => ''
-    );
-    return $defaults;
-}
-
 function woo_skroutz_define_constants($constant_name, $value) {
     $constant_name = 'WOO_SKROUTZ_' . $constant_name;
     if (!defined($constant_name))
