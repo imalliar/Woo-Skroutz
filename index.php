@@ -31,6 +31,9 @@ function createXML($feed_products) {
         $product->mpn->addCData(addslashes(trim($feed_product->mpn ? $feed_product->mpn : $feed_product->uniqueId)));
         $product->name=null;
         $product->name->addCData(addslashes(trim($feed_product->title)));
+        if($feed_product->ma)
+        $product->manufacturer=null;
+        $product->manufacturer->addCData(addslashes(trim($feed_product->manufacturer)));
     }
     return $xml;
 }
