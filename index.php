@@ -28,7 +28,9 @@ function createXML($feed_products) {
         $product = $products->addChild('product');
         $id = $product->addChild('id', $feed_product->uniqueId);
         $product->mpn=null;
-        $product->mpn->addCData(addslashes(trim($feed_product->mpn)));
+        $product->mpn->addCData(addslashes(trim($feed_product->mpn ? $feed_product->mpn : $feed_product->uniqueId)));
+        $product->name=null;
+        $product->name->addCData(addslashes(trim($feed_product->title)));
     }
     return $xml;
 }
@@ -152,7 +154,7 @@ function get_woocommerce_shipping_cost() {
 	        {
 	            $total_cost = $total_cost + $method->cost;
 	        }
-	        if($method->cost_per_order != '')
+	        if(property_exists($method, "cost_per_order") && $method->cost_per_order != '')
 	        {
 	            $total_cost = $total_cost + $method->cost_per_order;
 	        }
