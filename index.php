@@ -31,9 +31,25 @@ function createXML($feed_products) {
         $product->mpn->addCData(addslashes(trim($feed_product->mpn ? $feed_product->mpn : $feed_product->uniqueId)));
         $product->name=null;
         $product->name->addCData(addslashes(trim($feed_product->title)));
-        if($feed_product->ma)
-        $product->manufacturer=null;
-        $product->manufacturer->addCData(addslashes(trim($feed_product->manufacturer)));
+        if($feed_product->manufacturer) {
+            $product->manufacturer=null;
+            $product->manufacturer->addCData(addslashes(trim($feed_product->manufacturer)));    
+        }
+        $product->link=null;
+        $product->link->addCData(addslashes(trim($feed_product->productLink)));
+        if($feed_product->imageLink) {
+            $product->image=null;
+            $product->image->addCData(addslashes(trim($feed_product->imageLink)));
+        }
+        if(!empty($feed_product->additionalImageLink)) {
+            foreach($feed_product->additionalImageLink as $image) {
+                $product->addChild("additionalimage")->addCData($image);
+            }
+        }
+        $product->category=null;
+        $product->category->addCData(addslashes(trim($feed_product->category)));
+        $product->price_with_vat=0;
+        $product->price_with_vat=$feed_product->price;
     }
     return $xml;
 }
