@@ -123,6 +123,11 @@ function get_woocommerce_product_list() {
             $feed_product->shippingCost = $shipping_cost;
 
             $categories_id = $product->get_category_ids();
+            $categories_list=array();
+            foreach($categories_id as $cid) {
+                $categories_list[]=get_category_ancestors_ids($cid);
+            }
+
             if(!empty($categories_id)) {
                 $categories = array();
                 foreach ($categories_id as $cid) {
@@ -187,7 +192,7 @@ function get_woocommerce_shipping_cost() {
 $product_list = get_woocommerce_product_list();
 $xml = createXML($product_list);
 
-ob_clean();
+//ob_clean();
 $dom = dom_import_simplexml($xml)->ownerDocument;
 $dom->formatOutput = true;
 

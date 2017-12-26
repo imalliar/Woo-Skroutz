@@ -36,6 +36,16 @@ function get_category_ancestors($cid, $seperator=' > '){
     return implode($seperator, array_reverse($result));
 }
 
+function get_category_ancestors_ids($cid) {
+    $result=array();
+    while($cid>0) {
+        $category = get_product_category_by_id($cid);
+        $result[]=$cid;
+        $cid=$category->parent;
+    }
+    return $result;
+}
+
 function get_product_attribute($product, $slug) {
     $options = get_option(WOO_SKROUTZ_SETTINGS_PAGE);
     if ($options === false || empty($options)) $options = get_default_options_settings();
