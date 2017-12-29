@@ -24,17 +24,27 @@ function createXML($feed_products) {
     $xml->addChild('created_at', "$now");
     $products = $xml->addChild('products');
 
+    $neededObject = array_filter(
+        $feed_products,
+        function ($e) {
+            return $e->manufacturer;
+        }
+    );    
+
     foreach ($feed_products as $feed_product) {
         $product = $products->addChild('product');
         $id = $product->addChild('id', $feed_product->uniqueId);
         $product->mpn=null;
         $product->mpn->addCData(addslashes(trim($feed_product->mpn ? $feed_product->mpn : $feed_product->uniqueId)));
-        $product->name=null;
-        $product->name->addCData(addslashes(trim($feed_product->title)));
         if($feed_product->manufacturer) {
             $product->manufacturer=null;
             $product->manufacturer->addCData(addslashes(trim($feed_product->manufacturer)));    
+            if(strpos($feed_product->title, $feed_product->manufacturer) === false) {
+                $feed_product->title .= " - " . $feed_product->manufacturer;
+            }
         }
+        $product->name=null;
+        $product->name->addCData(addslashes(trim($feed_product->title)));
         $product->link=null;
         $product->link->addCData(addslashes(trim($feed_product->productLink)));
         if($feed_product->imageLink) {
@@ -72,6 +82,7 @@ function get_woocommerce_product_list() {
         $product = wc_get_product($theid);    
         
         if($product instanceof WC_Product_Variable) {
+            continue;
             $children = $product->get_children();
             foreach ($children as $child) {
                 $variation = wc_get_product($child);
