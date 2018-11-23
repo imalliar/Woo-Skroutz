@@ -33,7 +33,7 @@ function createXML($feed_products) {
 
     foreach ($feed_products as $feed_product) {
         $product = $products->addChild('product');
-        $id = $product->addChild('id', $feed_product->uniqueId);
+        $id = $product->addChild('uid', $feed_product->uniqueId);
         $product->mpn=null;
         $product->mpn->addCData(addslashes(trim($feed_product->mpn ? $feed_product->mpn : $feed_product->uniqueId)));
         if($feed_product->manufacturer) {
