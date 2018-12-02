@@ -129,6 +129,8 @@ if (!class_exists('WSkroutz_Admin')) {
         public function register_options_init() {
             $section = 'wskroutz_delivery_options_section';
             $taxonomy_section = 'wskroutz_taxonomy_options_section';
+            $shipping_section = 'wskroutz_shipping_options_section';
+
             register_setting($this->settings_page, $this->settings_page, array(  'sanitize_callback' => array($this, 'sanitize_callback'), ));         
             
             add_settings_section(

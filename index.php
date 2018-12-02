@@ -58,8 +58,8 @@ function createXML($feed_products) {
         }
         $product->category=null;
         $product->category->addCData(addslashes(trim($feed_product->category)));
-        $product->price_with_vat=0;
-        $product->price_with_vat=$feed_product->price;
+        $product->price=0;
+        $product->price=$feed_product->price;
     }
     return $xml;
 }
@@ -80,9 +80,14 @@ function get_woocommerce_product_list() {
         $theid = get_the_ID();
         $thetitle = get_the_title();
         $product = wc_get_product($theid);    
+
+        $available_variations = array();
+        if($product->get_type()=='variable'){
+            $available_variations = $product->get_available_variations(); 
+        }        
         
         if($product instanceof WC_Product_Variable) {
-            continue;
+            
             $children = $product->get_children();
             foreach ($children as $child) {
                 $variation = wc_get_product($child);
